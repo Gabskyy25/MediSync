@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@drawable/backgroundinfo2"
+    android:layout_margin="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvIssue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Issue: "
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvResolve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resolve: " />
+
+    <TextView
+        android:id="@+id/tvLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Emergency: " />
+</LinearLayout>

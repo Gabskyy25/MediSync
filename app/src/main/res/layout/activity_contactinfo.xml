@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/brown">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="14dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/backbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/backbtn"
+                android:tint="@color/brown6"
+                tools:ignore="UseAppTint" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Contacts"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:textColor="@color/brown6"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/contacthehe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:text="Your Contacts"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textColor="@color/brown6"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewContacts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/contacthehe"
+        android:layout_above="@id/btnAddInfo"
+        android:padding="16dp"
+        android:scrollbars="vertical"/>
+
+    <ImageButton
+        android:id="@+id/btnAddInfo"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="24dp"
+        android:background="@drawable/roundedbutton"
+        android:elevation="6dp"
+        android:padding="12dp"
+        android:scaleType="centerInside"
+        android:contentDescription="Add Contact Info"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="@color/brown6" />
+
+</RelativeLayout>
