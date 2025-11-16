@@ -44,7 +44,6 @@
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/brown2"
         android:elevation="12dp"
-
         app:cardCornerRadius="12dp">
         <LinearLayout
             android:layout_width="wrap_content"
@@ -60,7 +59,6 @@
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp" />
-
 
             <EditText
                 android:id="@+id/etAlarmDescription"
@@ -94,9 +92,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your Alarms:"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginStart="10dp"
         android:layout_margin="10dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAlarms"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp" />
 
 </LinearLayout>

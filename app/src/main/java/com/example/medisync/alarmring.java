@@ -43,7 +43,6 @@ public class alarmring extends AppCompatActivity implements TextToSpeech.OnInitL
         repeatHandler = new Handler();
         autoStopHandler = new Handler();
 
-        // Auto stop after chosen duration
         autoStopHandler.postDelayed(() -> {
             if (isActive) {
                 Toast.makeText(this, "Alarm auto-stopped", Toast.LENGTH_LONG).show();
