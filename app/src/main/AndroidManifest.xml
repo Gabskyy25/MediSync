@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -20,22 +21,24 @@
         <activity android:name=".contactinfo" android:exported="false" />
         <activity android:name=".schedule" android:exported="false" />
 
-
         <activity android:name=".alarm" />
+
         <activity
             android:name=".alarmring"
-            android:launchMode="singleTop"
-            android:excludeFromRecents="true" />
-
+            android:exported="true"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="com.example.medisync.ALARM_RING" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name=".alarmreceiver" />
 
-
         <activity android:name=".MainMenu" android:exported="false" />
-
         <activity android:name=".signupcaregiver" android:exported="false" />
-
-
 
         <activity
             android:name=".MainActivity"
@@ -45,6 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -9,7 +9,6 @@
     android:background="@color/brown"
     tools:context=".alarm">
 
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,40 +44,48 @@
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/brown2"
         android:elevation="12dp"
-        app:cardCornerRadius="12dp"
-        >
+
+        app:cardCornerRadius="12dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_gravity="center_horizontal"
-            >
+            android:layout_gravity="center_horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Alarm Time"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set Alarm Time"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp" />
 
-    <TimePicker
-        android:id="@+id/timePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:timePickerMode="spinner" />
 
-    <Button
-        android:id="@+id/btnSetAlarm"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/brown6"
-        android:text="Set Alarm"
-        android:textColor="@color/white"/>
+            <EditText
+                android:id="@+id/etAlarmDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter alarm description (e.g., take medicine)"
+                android:inputType="text"
+                android:layout_marginBottom="20dp"
+                android:padding="10dp" />
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:timePickerMode="spinner" />
+
+            <Button
+                android:id="@+id/btnSetAlarm"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/brown6"
+                android:text="Set Alarm"
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -86,11 +93,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your Alarms"
+        android:text="Your Alarms:"
         android:textSize="18dp"
         android:textStyle="bold"
         android:layout_marginStart="10dp"
-        android:layout_margin="10dp"/>
-
+        android:layout_margin="10dp" />
 
 </LinearLayout>

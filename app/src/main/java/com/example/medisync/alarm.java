@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ public class alarm extends AppCompatActivity {
 
     private TimePicker timePicker;
     private Button btnSetAlarm;
+    private EditText etAlarmDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class alarm extends AppCompatActivity {
 
         timePicker = findViewById(R.id.timePicker);
         btnSetAlarm = findViewById(R.id.btnSetAlarm);
+        etAlarmDescription = findViewById(R.id.etAlarmDescription);
 
         btnSetAlarm.setOnClickListener(v -> setAlarm());
     }
@@ -34,7 +37,13 @@ public class alarm extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, timePicker.getMinute());
         calendar.set(Calendar.SECOND, 0);
 
+        String description = etAlarmDescription.getText().toString().trim();
+        if (description.isEmpty()) {
+            description = "Alarm";
+        }
+
         Intent intent = new Intent(this, alarmreceiver.class);
+        intent.putExtra("ALARM_DESCRIPTION", description);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
