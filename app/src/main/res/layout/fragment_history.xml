@@ -14,12 +14,12 @@
         android:textSize="22sp"
         android:textStyle="bold"
         android:paddingBottom="10dp"
-        android:textColor="@color/brown6"/>
+        android:textColor="@color/brown6" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical" />
 
 </LinearLayout>

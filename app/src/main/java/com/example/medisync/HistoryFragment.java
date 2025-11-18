@@ -9,25 +9,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 public class HistoryFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    IssueAdapter adapter;
+    private RecyclerView recyclerView;
+    private IssueAdapter adapter;
+    private DBHelper dbHelper;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerHistory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new IssueAdapter(IssueStorage.getInstance().getIssues());
+        dbHelper = DBHelper.getInstance(requireContext());
+
+        List<Issue> issues = dbHelper.getAllIssues();
+        adapter = new IssueAdapter(issues);
         recyclerView.setAdapter(adapter);
 
         return view;
     }
 
     public void refreshList() {
-        adapter.notifyDataSetChanged();
+        List<Issue> issues = dbHelper.getAllIssues();
+        adapter.setData(issues);
     }
 }

@@ -1,12 +1,10 @@
 package com.example.medisync;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,6 +16,7 @@ import com.example.medisync.databinding.ActivityMainmenuBinding;
 public class MainMenu extends AppCompatActivity {
 
     private ActivityMainmenuBinding binding;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +24,7 @@ public class MainMenu extends AppCompatActivity {
         binding = ActivityMainmenuBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        dbHelper = DBHelper.getInstance(this);
 
         replaceFragment(new HomeFragment());
 
@@ -42,7 +42,6 @@ public class MainMenu extends AppCompatActivity {
             return true;
         });
 
-
         ImageView addButton = findViewById(R.id.addissuebtn);
         addButton.setOnClickListener(v -> showAddIssueDialog());
     }
@@ -56,19 +55,23 @@ public class MainMenu extends AppCompatActivity {
         EditText editIssue = dialogView.findViewById(R.id.editIssue);
         EditText editResolution = dialogView.findViewById(R.id.editResolution);
 
-        builder.setPositiveButton("Save", (DialogInterface dialog, int which) -> {
-            String issue = editIssue.getText().toString().trim();
-            String resolution = editResolution.getText().toString().trim();
+        builder.setPositiveButton("Save", (dialogInterface, which) -> {
+            String issueText = editIssue.getText().toString().trim();
+            String resolutionText = editResolution.getText().toString().trim();
 
-            if (!issue.isEmpty() && !resolution.isEmpty()) {
+            if (!issueText.isEmpty() && !resolutionText.isEmpty()) {
+                long now = System.currentTimeMillis();
+                Issue issue = new Issue(issueText, resolutionText, now);
+                long id = dbHelper.addIssue(issue);
+                if (id != -1) {
+                    Toast.makeText(this, "Issue added", Toast.LENGTH_SHORT).show();
 
-                IssueStorage.getInstance().addIssue(new Issue(issue, resolution));
-                Toast.makeText(this, "Issue added", Toast.LENGTH_SHORT).show();
-
-
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                if (currentFragment instanceof HistoryFragment) {
-                    ((HistoryFragment) currentFragment).refreshList();
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                    if (currentFragment instanceof HistoryFragment) {
+                        ((HistoryFragment) currentFragment).refreshList();
+                    }
+                } else {
+                    Toast.makeText(this, "Failed to save issue", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show();
@@ -76,7 +79,6 @@ public class MainMenu extends AppCompatActivity {
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
         builder.create().show();
     }
 

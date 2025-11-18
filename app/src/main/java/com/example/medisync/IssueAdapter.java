@@ -8,9 +8,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
-public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> {
+public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.VH> {
 
     private List<Issue> issues;
 
@@ -18,33 +20,45 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
         this.issues = issues;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView issueText, resolutionText;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            issueText = itemView.findViewById(R.id.textIssue);
-            resolutionText = itemView.findViewById(R.id.textResolution);
-        }
-    }
-
     @NonNull
     @Override
-    public IssueAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_issue, parent, false);
-        return new ViewHolder(v);
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_issue, parent, false);
+        return new VH(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull IssueAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, int position) {
         Issue issue = issues.get(position);
-        holder.issueText.setText("Issue: " + issue.getIssue());
-        holder.resolutionText.setText("Resolution: " + issue.getResolution());
+        holder.tvIssue.setText(issue.getIssue());
+        holder.tvResolve.setText(issue.getResolution());
+        holder.tvLevel.setText("");
+        holder.tvSavedOn.setText("Saved on: " + formatTimestamp(issue.getSavedAt()));
     }
 
     @Override
     public int getItemCount() {
-        return issues.size();
+        return issues == null ? 0 : issues.size();
+    }
+
+    public void setData(List<Issue> data) {
+        this.issues = data;
+        notifyDataSetChanged();
+    }
+
+    private String formatTimestamp(long millis) {
+        Date d = new Date(millis);
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(d);
+    }
+
+    static class VH extends RecyclerView.ViewHolder {
+        TextView tvIssue, tvResolve, tvLevel, tvSavedOn;
+        VH(@NonNull View v) {
+            super(v);
+            tvIssue = v.findViewById(R.id.tvIssue);
+            tvResolve = v.findViewById(R.id.tvResolve);
+            tvLevel = v.findViewById(R.id.tvLevel);
+            tvSavedOn = v.findViewById(R.id.tvSavedOn);
+        }
     }
 }

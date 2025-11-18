@@ -4,36 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/brown">
+    android:background="#603620">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="14dp">
+        android:backgroundTint="#fcf9f2"
+        app:cardElevation="12dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="14dp"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/backbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/backbtn"
-                android:tint="@color/brown6"
-                tools:ignore="UseAppTint" />
+                app:tint="#231f20" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="Contacts"
-                android:textSize="30dp"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="@color/brown6"/>
+                android:textColor="#231f20" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -42,12 +43,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/header"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:layout_marginStart="20dp"
         android:text="Your Contacts"
-        android:textSize="25dp"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="@color/brown6"/>
+        android:textColor="#fcf9f2" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewContacts"
@@ -56,21 +57,21 @@
         android:layout_below="@id/contacthehe"
         android:layout_above="@id/btnAddInfo"
         android:padding="16dp"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical" />
 
     <ImageButton
         android:id="@+id/btnAddInfo"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="24dp"
         android:background="@drawable/roundedbutton"
-        android:elevation="6dp"
+        android:elevation="8dp"
         android:padding="12dp"
         android:scaleType="centerInside"
-        android:contentDescription="Add Contact Info"
         android:src="@android:drawable/ic_input_add"
-        app:tint="@color/brown6" />
+        app:tint="#63703d"
+        android:contentDescription="Add Contact Info" />
 
 </RelativeLayout>

@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:background="@drawable/backgroundinfo2"
+    android:padding="14dp"
+    android:background="#f3e4bd"
     android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -11,17 +12,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Issue: "
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:textColor="#231f20"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvResolve"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Resolve: " />
+        android:text="Resolve: "
+        android:textColor="#231f20"
+        android:layout_marginTop="4dp"/>
 
     <TextView
         android:id="@+id/tvLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Emergency: " />
+        android:text="Emergency: "
+        android:textColor="#603620"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/tvSavedOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saved on: "
+        android:textColor="#63703d"
+        android:textSize="12sp"
+        android:layout_marginTop="8dp"/>
 </LinearLayout>

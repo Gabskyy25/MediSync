@@ -18,7 +18,7 @@ public class alarmring extends AppCompatActivity implements TextToSpeech.OnInitL
     private Handler autoStopHandler;
 
     private static final long AUTO_STOP_DURATION = 2 * 60 * 1000;
-    private static final long REPEAT_INTERVAL = 1500;
+    private static final long REPEAT_INTERVAL = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
