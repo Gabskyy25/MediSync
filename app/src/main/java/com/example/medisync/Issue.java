@@ -4,7 +4,7 @@ public class Issue {
     private long id;
     private String issue;
     private String resolution;
-    private long savedAt; // epoch millis
+    private long savedAt;
 
     public Issue() {}
 

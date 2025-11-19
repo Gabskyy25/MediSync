@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="22dp"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="@drawable/backgroundinfo2"
     android:gravity="center_horizontal">
 
+    <!-- TITLE -->
+    <TextView
+        android:text="Add Contact"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#231f20"
+        android:layout_marginBottom="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <EditText
         android:id="@+id/etName"
-        android:hint="Name"
+        android:hint="Full Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_background"
         android:padding="12dp"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/etNumber"
@@ -24,7 +34,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_background"
         android:padding="12dp"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/etAddress"
@@ -33,7 +43,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_background"
         android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:text="Relationship"
+        android:textColor="#231f20"
+        android:textStyle="bold"
+        android:layout_marginBottom="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <RadioGroup
         android:id="@+id/radioGroupRelation"
@@ -42,38 +60,40 @@
         android:layout_marginBottom="20dp">
 
         <RadioButton
-            android:id="@+id/rbGrandmother"
-            android:text="Grandmother"
+            android:id="@+id/rbSon"
+            android:text="Son"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <RadioButton
-            android:id="@+id/rbGrandfather"
-            android:text="Grandfather"
+            android:id="@+id/rbDaughter"
+            android:text="Daughter"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <RadioButton
-            android:id="@+id/rbMother"
-            android:text="Mother"
+            android:id="@+id/rbWife"
+            android:text="Wife"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <RadioButton
-            android:id="@+id/rbFather"
-            android:text="Father"
+            android:id="@+id/rbHusband"
+            android:text="Husband"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
     </RadioGroup>
 
     <Button
         android:id="@+id/btnConfirm"
-        android:text="Confirm"
+        android:text="Save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/brown6"
         android:textColor="@color/white"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:layout_gravity="end"/>
+        android:paddingLeft="28dp"
+        android:paddingRight="28dp"
+        android:layout_gravity="end" />
+
 </LinearLayout>

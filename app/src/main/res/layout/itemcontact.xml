@@ -25,24 +25,27 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tvRelation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Relation"
+            android:textColor="#231f20"
+            android:layout_marginTop="4dp" />
+
+        <TextView
             android:id="@+id/tvNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Phone Number"
-            android:textColor="#231f20" />
+            android:textColor="#231f20"
+            android:layout_marginTop="6dp" />
 
         <TextView
             android:id="@+id/tvAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address"
-            android:textColor="#231f20" />
-
-        <TextView
-            android:id="@+id/tvRelation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Relation"
-            android:textColor="#231f20" />
+            android:textColor="#231f20"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

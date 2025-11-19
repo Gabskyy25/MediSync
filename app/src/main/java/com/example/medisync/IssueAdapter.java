@@ -8,8 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.VH> {
@@ -23,17 +21,17 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.VH> {
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_issue, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_issue, parent, false);
         return new VH(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         Issue issue = issues.get(position);
-        holder.tvIssue.setText(issue.getIssue());
-        holder.tvResolve.setText(issue.getResolution());
-        holder.tvLevel.setText("");
-        holder.tvSavedOn.setText("Saved on: " + formatTimestamp(issue.getSavedAt()));
+
+        holder.textIssue.setText(issue.getIssue());
+        holder.textResolution.setText(issue.getResolution());
     }
 
     @Override
@@ -46,19 +44,13 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.VH> {
         notifyDataSetChanged();
     }
 
-    private String formatTimestamp(long millis) {
-        Date d = new Date(millis);
-        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(d);
-    }
-
     static class VH extends RecyclerView.ViewHolder {
-        TextView tvIssue, tvResolve, tvLevel, tvSavedOn;
+        TextView textIssue, textResolution;
+
         VH(@NonNull View v) {
             super(v);
-            tvIssue = v.findViewById(R.id.tvIssue);
-            tvResolve = v.findViewById(R.id.tvResolve);
-            tvLevel = v.findViewById(R.id.tvLevel);
-            tvSavedOn = v.findViewById(R.id.tvSavedOn);
+            textIssue = v.findViewById(R.id.textIssue);
+            textResolution = v.findViewById(R.id.textResolution);
         }
     }
 }
