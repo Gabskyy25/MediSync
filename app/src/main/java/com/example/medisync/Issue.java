@@ -1,21 +1,30 @@
+package com.example.medisync;
+
 public class Issue {
-    private String id;
+
+    private long id;
     private String issue;
     private String resolution;
-    private String dateAdded;
+    private long dateAdded;
 
     public Issue() {
-        // Required empty constructor for Firestore
     }
 
-    public Issue(String id, String issue, String resolution, String dateAdded) {
+    public Issue(long id, String issue, String resolution, long dateAdded) {
         this.id = id;
         this.issue = issue;
         this.resolution = resolution;
         this.dateAdded = dateAdded;
     }
 
-    public String getId() {
+    public Issue(String issue, String resolution, long dateAdded) {
+        this.id = -1;
+        this.issue = issue;
+        this.resolution = resolution;
+        this.dateAdded = dateAdded;
+    }
+
+    public long getId() {
         return id;
     }
 
@@ -27,11 +36,11 @@ public class Issue {
         return resolution;
     }
 
-    public String getDateAdded() {
+    public long getDateAdded() {
         return dateAdded;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -43,7 +52,7 @@ public class Issue {
         this.resolution = resolution;
     }
 
-    public void setDateAdded(String dateAdded) {
+    public void setDateAdded(long dateAdded) {
         this.dateAdded = dateAdded;
     }
 }

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import java.util.List;
 
@@ -26,19 +25,6 @@ public class HistoryFragment extends Fragment {
 
         dbHelper = DBHelper.getInstance(requireContext());
 
-        Button btnClearAll = view.findViewById(R.id.btnClearAll);
-        btnClearAll.setOnClickListener(v -> {
-            new android.app.AlertDialog.Builder(requireContext())
-                    .setTitle("Clear All")
-                    .setMessage("Are you sure you want to clear all history?")
-                    .setPositiveButton("Yes", (d, w) -> {
-                        dbHelper.clearAll();
-                        refreshList();
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        });
-
         loadData();
         return view;
     }
@@ -51,11 +37,7 @@ public class HistoryFragment extends Fragment {
 
     public void refreshList() {
         List<Issue> issues = dbHelper.getAllIssues();
-        if (adapter == null) {
-            adapter = new IssueAdapter(getContext(), issues, dbHelper, this::refreshList);
-            recyclerView.setAdapter(adapter);
-        } else {
-            adapter.setData(issues);
-        }
+        adapter = new IssueAdapter(getContext(), issues, dbHelper, this::refreshList);
+        recyclerView.setAdapter(adapter);
     }
 }

@@ -1,3 +1,5 @@
+package com.example.medisync;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,22 +13,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHolder> {
 
     private Context context;
-    private ArrayList<Issue> issueList;
+    private List<Issue> issueList;
+    private DBHelper db;
+    private Runnable onUpdated;
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth auth = FirebaseAuth.getInstance();
-
-    public IssueAdapter(Context context, ArrayList<Issue> issueList) {
+    public IssueAdapter(Context context, List<Issue> issueList, DBHelper db, Runnable onUpdated) {
         this.context = context;
         this.issueList = issueList;
+        this.db = db;
+        this.onUpdated = onUpdated;
     }
 
     @NonNull
@@ -42,24 +42,22 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
 
         holder.textIssue.setText(issue.getIssue());
         holder.textResolution.setText(issue.getResolution());
-        holder.textDate.setText("Added on: " + issue.getDateAdded());
+        holder.textDate.setText("Saved at: " + issue.getDateAdded());
 
         holder.btnDelete.setOnClickListener(v -> {
-            String uid = auth.getCurrentUser().getUid();
-
-            db.collection("users")
-                    .document(uid)
-                    .collection("issues")
-                    .document(issue.getId())
-                    .delete()
-                    .addOnSuccessListener(aVoid -> {
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete")
+                    .setMessage("Delete this issue?")
+                    .setPositiveButton("Yes", (d, w) -> {
+                        db.deleteIssue(issue.getId());
                         issueList.remove(position);
                         notifyItemRemoved(position);
-                        Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-                    });
+                        onUpdated.run();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         });
 
-        // ---------------- EDIT ----------------
         holder.btnEdit.setOnClickListener(v -> openEditDialog(issue, position));
     }
 
@@ -72,41 +70,26 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
         editIssue.setText(issue.getIssue());
         editResolution.setText(issue.getResolution());
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        new AlertDialog.Builder(context)
                 .setTitle("Edit Issue")
                 .setView(dialogView)
-                .setPositiveButton("Save", (dialogInterface, i) -> {
-
+                .setPositiveButton("Save", (dialog, which) -> {
                     String newIssue = editIssue.getText().toString().trim();
                     String newResolution = editResolution.getText().toString().trim();
 
                     if (newIssue.isEmpty() || newResolution.isEmpty()) {
-                        Toast.makeText(context, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Empty fields", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    String uid = auth.getCurrentUser().getUid();
-
-                    db.collection("users")
-                            .document(uid)
-                            .collection("issues")
-                            .document(issue.getId())
-                            .update(
-                                    "issue", newIssue,
-                                    "resolution", newResolution
-                            )
-                            .addOnSuccessListener(aVoid -> {
-                                issue.setIssue(newIssue);
-                                issue.setResolution(newResolution);
-                                notifyItemChanged(position);
-                                Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show();
-                            });
-
+                    db.updateIssue(issue.getId(), newIssue, newResolution);
+                    issue.setIssue(newIssue);
+                    issue.setResolution(newResolution);
+                    notifyItemChanged(position);
+                    onUpdated.run();
                 })
                 .setNegativeButton("Cancel", null)
-                .create();
-
-        dialog.show();
+                .show();
     }
 
     @Override
@@ -125,7 +108,6 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
             textIssue = itemView.findViewById(R.id.textIssue);
             textResolution = itemView.findViewById(R.id.textResolution);
             textDate = itemView.findViewById(R.id.textDate);
-
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

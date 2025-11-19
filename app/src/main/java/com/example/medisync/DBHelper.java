@@ -1,4 +1,3 @@
-
 package com.example.medisync;
 
 import android.content.ContentValues;
@@ -6,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +35,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE = "CREATE TABLE " + TABLE_ISSUES + " ("
-                + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COL_ISSUE + " TEXT NOT NULL, "
-                + COL_RESOLUTION + " TEXT NOT NULL, "
-                + COL_SAVED_AT + " INTEGER NOT NULL"
-                + ")";
+        String CREATE = "CREATE TABLE " + TABLE_ISSUES + " (" +
+                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_ISSUE + " TEXT, " +
+                COL_RESOLUTION + " TEXT, " +
+                COL_SAVED_AT + " INTEGER)";
         db.execSQL(CREATE);
     }
 
@@ -55,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_ISSUE, issue.getIssue());
         values.put(COL_RESOLUTION, issue.getResolution());
-        values.put(COL_SAVED_AT, issue.getSavedAt());
+        values.put(COL_SAVED_AT, issue.getDateAdded());
         long id = db.insert(TABLE_ISSUES, null, values);
         db.close();
         return id;
@@ -66,33 +65,23 @@ public class DBHelper extends SQLiteOpenHelper {
         String select = "SELECT * FROM " + TABLE_ISSUES + " ORDER BY " + COL_SAVED_AT + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(select, null);
-        try {
-            if (c.moveToFirst()) {
-                do {
-                    long id = c.getLong(c.getColumnIndexOrThrow(COL_ID));
-                    String issue = c.getString(c.getColumnIndexOrThrow(COL_ISSUE));
-                    String resolution = c.getString(c.getColumnIndexOrThrow(COL_RESOLUTION));
-                    long savedAt = c.getLong(c.getColumnIndexOrThrow(COL_SAVED_AT));
-                    Issue i = new Issue(id, issue, resolution, savedAt);
-                    list.add(i);
-                } while (c.moveToNext());
-            }
-        } finally {
-            c.close();
-            db.close();
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getLong(c.getColumnIndexOrThrow(COL_ID));
+                String issue = c.getString(c.getColumnIndexOrThrow(COL_ISSUE));
+                String resolution = c.getString(c.getColumnIndexOrThrow(COL_RESOLUTION));
+                long savedAt = c.getLong(c.getColumnIndexOrThrow(COL_SAVED_AT));
+                list.add(new Issue(id, issue, resolution, savedAt));
+            } while (c.moveToNext());
         }
+        c.close();
+        db.close();
         return list;
     }
 
     public void deleteIssue(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ISSUES, COL_ID + "=?", new String[]{String.valueOf(id)});
-        db.close();
-    }
-
-    public void clearAll() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_ISSUES, null, null);
         db.close();
     }
 
