@@ -1,35 +1,49 @@
-package com.example.medisync;
-
 public class Issue {
-    private long id;
+    private String id;
     private String issue;
     private String resolution;
-    private long savedAt;
+    private String dateAdded;
 
-    public Issue() {}
-
-    public Issue(String issue, String resolution, long savedAt) {
-        this.issue = issue;
-        this.resolution = resolution;
-        this.savedAt = savedAt;
+    public Issue() {
+        // Required empty constructor for Firestore
     }
 
-    public Issue(long id, String issue, String resolution, long savedAt) {
+    public Issue(String id, String issue, String resolution, String dateAdded) {
         this.id = id;
         this.issue = issue;
         this.resolution = resolution;
-        this.savedAt = savedAt;
+        this.dateAdded = dateAdded;
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getIssue() { return issue; }
-    public void setIssue(String issue) { this.issue = issue; }
+    public String getIssue() {
+        return issue;
+    }
 
-    public String getResolution() { return resolution; }
-    public void setResolution(String resolution) { this.resolution = resolution; }
+    public String getResolution() {
+        return resolution;
+    }
 
-    public long getSavedAt() { return savedAt; }
-    public void setSavedAt(long savedAt) { this.savedAt = savedAt; }
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setIssue(String issue) {
+        this.issue = issue;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
 }

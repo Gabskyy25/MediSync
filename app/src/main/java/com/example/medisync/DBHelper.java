@@ -1,3 +1,4 @@
+
 package com.example.medisync;
 
 import android.content.ContentValues;
@@ -5,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +73,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     String issue = c.getString(c.getColumnIndexOrThrow(COL_ISSUE));
                     String resolution = c.getString(c.getColumnIndexOrThrow(COL_RESOLUTION));
                     long savedAt = c.getLong(c.getColumnIndexOrThrow(COL_SAVED_AT));
-
                     Issue i = new Issue(id, issue, resolution, savedAt);
                     list.add(i);
                 } while (c.moveToNext());
@@ -94,6 +93,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public void clearAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ISSUES, null, null);
+        db.close();
+    }
+
+    public void updateIssue(long id, String issue, String resolution) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COL_ISSUE, issue);
+        values.put(COL_RESOLUTION, resolution);
+        db.update(TABLE_ISSUES, values, COL_ID + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
 }

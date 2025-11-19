@@ -59,27 +59,32 @@ public class MainMenu extends AppCompatActivity {
             String issueText = editIssue.getText().toString().trim();
             String resolutionText = editResolution.getText().toString().trim();
 
-            if (!issueText.isEmpty() && !resolutionText.isEmpty()) {
-                long now = System.currentTimeMillis();
-                Issue issue = new Issue(issueText, resolutionText, now);
-                long id = dbHelper.addIssue(issue);
-                if (id != -1) {
-                    Toast.makeText(this, "Issue added", Toast.LENGTH_SHORT).show();
-
-                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                    if (currentFragment instanceof HistoryFragment) {
-                        ((HistoryFragment) currentFragment).refreshList();
-                    }
-                } else {
-                    Toast.makeText(this, "Failed to save issue", Toast.LENGTH_SHORT).show();
-                }
-            } else {
+            if (issueText.isEmpty() || resolutionText.isEmpty()) {
                 Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            long now = System.currentTimeMillis();
+            Issue issue = new Issue(issueText, resolutionText, now);
+            long id = dbHelper.addIssue(issue);
+
+            if (id != -1) {
+                Toast.makeText(this, "Issue added", Toast.LENGTH_SHORT).show();
+                refreshHistoryIfVisible();
+            } else {
+                Toast.makeText(this, "Failed to save issue", Toast.LENGTH_SHORT).show();
             }
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    public void refreshHistoryIfVisible() {
+        Fragment current = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+        if (current instanceof HistoryFragment) {
+            ((HistoryFragment) current).refreshList();
+        }
     }
 
     private void replaceFragment(Fragment fragment) {
