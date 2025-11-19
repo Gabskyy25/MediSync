@@ -1,11 +1,13 @@
 package com.example.medisync;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,41 +35,63 @@ public class signupcaregiver extends AppCompatActivity {
         Button signupBtn = findViewById(R.id.btnsignup);
         TextView goback = findViewById(R.id.gobacklogin);
 
+        ProgressDialog loading = new ProgressDialog(this);
+        loading.setMessage("Creating account...");
+        loading.setCancelable(false);
+
         signupBtn.setOnClickListener(v -> {
             String email = emailField.getText().toString().trim();
             String password = passField.getText().toString().trim();
             String confirmPassword = confirmPassField.getText().toString().trim();
             String phone = phoneField.getText().toString().trim();
-            String role = "Caregiver";
 
-            if (email.isEmpty() || password.isEmpty() || phone.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                emailField.setError("Invalid email format");
+                return;
+            }
+
+            if (password.length() < 6) {
+                passField.setError("Password must be at least 6 characters");
                 return;
             }
 
             if (!password.equals(confirmPassword)) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                confirmPassField.setError("Passwords do not match");
                 return;
             }
+
+            if (phone.length() < 8) {
+                phoneField.setError("Invalid phone number");
+                return;
+            }
+
+            loading.show();
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            String userId = mAuth.getCurrentUser().getUid();
-                            User user = new User(email, phone, role);
 
-                            mDatabase.child(userId).setValue(user)
+                            String userId = mAuth.getCurrentUser().getUid();
+
+                            User user = new User(email, phone, "Caregiver");
+
+                            mDatabase.child(userId).child("profile").setValue(user)
                                     .addOnCompleteListener(dbTask -> {
+                                        loading.dismiss();
                                         if (dbTask.isSuccessful()) {
-                                            Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(this, MainActivity.class));
                                             finish();
                                         } else {
-                                            Toast.makeText(this, "Database Error: " + dbTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, "Database Error: " +
+                                                    dbTask.getException().getMessage(), Toast.LENGTH_LONG).show();
                                         }
                                     });
+
                         } else {
-                            Toast.makeText(this, "Signup Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            loading.dismiss();
+                            Toast.makeText(this, "Signup Failed: " +
+                                    task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         });
@@ -78,11 +102,10 @@ public class signupcaregiver extends AppCompatActivity {
         });
     }
 
-
     public static class User {
         public String email, phone, role;
 
-        public User() {}
+        public User() { }
 
         public User(String email, String phone, String role) {
             this.email = email;

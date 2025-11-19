@@ -38,6 +38,8 @@ public class MainMenu extends AppCompatActivity {
                 replaceFragment(new HistoryFragment());
             } else if (id == R.id.account) {
                 replaceFragment(new AccountFragment());
+            } else if (id == R.id.info){
+                replaceFragment(new info());
             }
             return true;
         });

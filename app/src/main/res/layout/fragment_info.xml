@@ -1,173 +1,488 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/brown"
-    tools:context=".info">
+    android:orientation="vertical"
+    android:background="#63703d">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/TermsandPolicies"
-            android:layout_width="302dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="50dp"
-            android:text="Terms and Policies"
-            android:textSize="35sp"
-            android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#63703d"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/TermsandPolicies"
-            android:layout_alignStart="@id/TermsandPolicies"
-            android:layout_marginStart="-55dp"
-            android:layout_marginTop="-4dp"
-            android:paddingTop="10dp"
-            android:text="Welcome to MediSync. These are the Terms of Service and Policies of our app.\nRead it carefully."
-            android:textAlignment="center"
-            android:textSize="20sp" />
+            android:layout_width="388dp"
+            android:layout_height="49dp"
+            android:textColor="#fcf9f2"
+            android:fontFamily="@font/concertone"
+            android:text="Members"
+            android:textSize="28sp" />
 
-        <TextView
-            android:id="@+id/terms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="21dp"
-            android:drawableLeft="@drawable/menu_squared"
-            android:drawablePadding="10dp"
-            android:text="Terms of Service"
-            android:textSize="30sp"
-            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/description1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/terms"
-            android:layout_alignStart="@id/terms"
-            android:layout_marginStart="-17dp"
-            android:layout_marginTop="1dp"
-            android:paddingTop="10dp"
-            android:text="1. By using this app, you must confirm that you accept our Terms of Service to follow them."
-            android:textSize="20sp" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/description2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description1"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:text="2. Do not use this app for harmful activities"
-            android:textSize="20sp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/description3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description2"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:text="3. All logos, features and designs within the app is belong to MediSync. Do not copy or take our materials without our permissions"
-            android:textSize="20sp" />
-        <TextView
-            android:id="@+id/Policy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description3"
-            android:layout_alignStart="@id/terms"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:drawableLeft="@drawable/menu_squared"
-            android:drawablePadding="10dp"
-            android:text="Privacy Policy"
-            android:textSize="30sp"
-            android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/description4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Policy"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:text="1. We collect data privacy and information like emails, numbers, and location."
-            android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/description5"
-            android:layout_width="wrap_content"
+        <!--Gabriel-->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/description4"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:text="2. We ensure that the account and your privacy was in safe and secured."
-            android:textSize="20sp" />
+            android:background="#231f20 "
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/description6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description5"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:text="3. Users have rights to change, update, and delete their data."
-            android:textSize="20sp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
 
-        <TextView
-            android:id="@+id/description7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description6"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:text="4. You can contact us with this email:"
-            android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/gmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/description7"
-            android:layout_alignStart="@id/description1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="10dp"
-            android:textColor="#0000FF"
-            android:text="MediSync@gmail.com"
-            android:textSize="20sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/gmail"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="19dp"
-            android:layout_marginEnd="164dp"
-            android:text="Agree"/>
-    </RelativeLayout>
 
-</ScrollView>
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/deguzman" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Jan Gabriel de Guzman"
+                        android:textColor="#fcf9f2" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Gmail: jangabrieldeguzman25@gmail.com"
+                        android:textColor="#f2f9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : 09940237656 "
+                        android:textColor="#f2f9f2" />
+
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--Ralph-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/carandang" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Ralph Gian Carandang"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: co.ralphgiancarandang@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : 09911710034 "
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--Eli-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d "
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/jose" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Elijiah Rhaine Jose"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: elijiahjose@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : 09066473132 "
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--Chloe-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/laygo" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Chloe Ahliana Laygo"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: laygochloe@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : 09355651168"
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--Alexa-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/lolong" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Alexa Lolong"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: lolongalexamendoza@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : 09913449831 "
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <!--Kirsten-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/natarte" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Kirsten Chloe Natarte"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: kirstenchloenatarte@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : "
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--Andrei James-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/perion" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Andrei James Perion"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: andreijamesperion@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : "
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--Jondel-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="370dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#63703d"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="131dp"
+                        android:layout_height="146dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/tiquio" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="#fcf9f2"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Name: Jondel Tiquio"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Section: MAWD 201"
+                        android:textColor="#fcf9f2" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Gmail: jondeltiquio@gmail.com"
+                        android:textColor="#f2f9f2"
+                        android:fontFamily="@font/fredoka"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/fredoka"
+                        android:text="Contact No. : 09391901331 "
+                        android:textColor="#f2f9f2" />
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+

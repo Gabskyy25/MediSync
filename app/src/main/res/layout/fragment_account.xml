@@ -5,145 +5,277 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/brown"
+    android:background="#fcf9f2"
     tools:context=".AccountFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <TextView
-            android:id="@+id/shape"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="167dp"
-            android:background="@drawable/circleagain" />
+            android:layout_height="160dp"
+            android:background="@drawable/circleagain">
 
-        <TextView
-            android:id="@+id/arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp" />
-
-
-        <TextView
-            android:id="@+id/account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            app:drawableTopCompat="@drawable/baseline_account_circle_24"
-            android:text=""
-            android:textSize="0sp" />
-
+            <ImageView
+                android:id="@+id/account"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/baseline_account_circle_24"
+                 />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/account"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:text=""
-            android:textColor="@color/black"
-            android:textSize="23sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:textColor="#231f20"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Section Title -->
         <TextView
             android:id="@+id/security"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/Name"
-            android:layout_marginTop="80dp"
-            android:paddingStart="15dp"
+            android:layout_marginTop="40dp"
             android:text="Account Security"
-            android:textColor="@color/black"
-            android:textSize="27sp"
+            android:textColor="#231f20"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
-        <!-- Email Label -->
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#b56b37" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/security"
-            android:layout_marginTop="20dp"
-            android:drawablePadding="15dp"
-            android:text="Linked Email"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="18dp">
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Linked Email"
+                android:textColor="#231f20"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/gmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#92a0ad"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b56b37" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="18dp">
+
+            <TextView
+                android:id="@+id/phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Linked Phone"
+                android:textColor="#231f20"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/PhoneNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#92a0ad"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b56b37" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="18dp">
+
+            <TextView
+                android:id="@+id/Password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:textColor="#231f20"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/Pass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="••••••••"
+                android:textColor="#92a0ad"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#b56b37" />
 
 
         <TextView
-            android:id="@+id/gmail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/email"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:text=""
-        android:textColor="#92a0ad"
-        android:textSize="17sp" />
+            android:text="Patient Information"
+            android:layout_marginTop="30dp"
+            android:textColor="#231f20"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-
-        <TextView
-            android:id="@+id/phone"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/patientName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/email"
-            android:layout_marginTop="20dp"
-            android:drawablePadding="15dp"
-            android:text="Linked Phone"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:hint="Patient Name"
+            android:background="@drawable/edittext_background"
+            android:padding="15dp"
+            android:textColor="#231f20"
+            android:textSize="17sp"
+            android:layout_marginTop="10dp" />
 
-        <!-- Dynamic Phone -->
-        <TextView
-            android:id="@+id/PhoneNo"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/patientAge"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/phone"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:text=""
-        android:textColor="#92a0ad"
-        android:textSize="17sp" />
+            android:hint="Age"
+            android:inputType="number"
+            android:background="@drawable/edittext_background"
+            android:padding="15dp"
+            android:textColor="#231f20"
+            android:textSize="17sp"
+            android:layout_marginTop="10dp" />
 
-
-        <TextView
-            android:id="@+id/Password"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/patientBirthdate"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/phone"
-            android:layout_marginTop="20dp"
-            android:drawablePadding="15dp"
-            android:text="Password"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:hint="Birthdate (MM/DD/YYYY)"
+            android:inputType="date"
+            android:background="@drawable/edittext_background"
+            android:padding="15dp"
+            android:textColor="#231f20"
+            android:textSize="17sp"
+            android:layout_marginTop="10dp" />
 
-        <TextView
-            android:id="@+id/Pass"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/patientDisease"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/Password"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:text="••••••••"
-            android:textColor="#92a0ad"
-            android:textSize="17sp" />
+            android:hint="Diseases"
+            android:inputType="date"
+            android:background="@drawable/edittext_background"
+            android:padding="15dp"
+            android:textColor="#231f20"
+            android:textSize="17sp"
+            android:layout_marginTop="10dp" />
 
-        <!-- Logout Button -->
+
+        <Button
+            android:id="@+id/editBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Edit Information"
+            android:backgroundTint="#b56b37"
+            android:textColor="#fcf9f2"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Save Changes"
+            android:backgroundTint="#63703d"
+            android:textColor="#fcf9f2"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/deleteBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Delete Account"
+            android:backgroundTint="#603620"
+            android:textColor="#fcf9f2"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Password"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:layout_centerHorizontal="true"
-            android:backgroundTint="@color/brown6"
+            android:backgroundTint="#b56b37"
             android:text="Log Out"
-            android:textSize="15sp" />
+            android:textColor="#fcf9f2"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
-    </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnAddPatient"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Add Patient"
+            android:backgroundTint="#63703d"
+            android:textColor="#fcf9f2"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/patientListTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Saved Patients"
+            android:textColor="#231f20"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="25dp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/patientRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="10dp" />
+
+
+    </LinearLayout>
+
 </ScrollView>
