@@ -47,5 +47,15 @@
             android:text="Address"
             android:textColor="#231f20"
             android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/btnCallNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Call Now"
+            android:backgroundTint="#63703d"
+            android:textColor="#ffffff"
+            android:layout_marginTop="14dp"
+            android:padding="8dp"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
@@ -20,6 +21,7 @@
         <activity android:name=".notification" android:exported="false" />
         <activity android:name=".contactinfo" android:exported="false" />
         <activity android:name=".schedule" android:exported="false" />
+
 
         <activity android:name=".alarm" />
 

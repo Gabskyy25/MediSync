@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-public class ContactDatabaseHelper extends SQLiteOpenHelper {
+public class ContactDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "contacts.db";
     private static final int DATABASE_VERSION = 1;
@@ -20,7 +20,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ADDRESS = "address";
     private static final String COLUMN_RELATION = "relation";
 
-    public ContactDatabaseHelper(Context context) {
+    public ContactDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -42,7 +42,6 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Insert new contact
     public long addContact(Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -55,7 +54,6 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    // Fetch all contacts
     public ArrayList<Contact> getAllContacts() {
         ArrayList<Contact> contactList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -77,14 +75,12 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         return contactList;
     }
 
-    // Delete contact
     public void deleteContact(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CONTACTS, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
 
-    // Update contact
     public int updateContact(Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

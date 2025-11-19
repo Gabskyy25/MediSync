@@ -13,14 +13,16 @@
         android:id="@+id/action_more"
         android:title="More"
         android:icon="@drawable/ic_more_vert"
-    app:showAsAction="always">
-    <menu>
-        <item
-            android:id="@+id/action_sort_name"
-            android:title="Sort by Name (A–Z)" />
-        <item
-            android:id="@+id/action_sort_relation"
-            android:title="Sort by Relation" />
-    </menu>
-</item>
-    </menu>
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/action_sort_name"
+                android:title="Sort by Name (A–Z)" />
+
+            <item
+                android:id="@+id/action_sort_relation"
+                android:title="Sort by Relation" />
+        </menu>
+    </item>
+</menu>

@@ -35,7 +35,6 @@
                 android:textStyle="bold"
                 android:textColor="#231f20" />
 
-            <!-- Toolbar for search + overflow -->
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarContacts"
                 android:layout_width="wrap_content"

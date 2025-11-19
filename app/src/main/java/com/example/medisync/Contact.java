@@ -15,7 +15,6 @@ public class Contact {
         this.relation = relation;
     }
 
-    // For inserting new contact without id
     public Contact(String name, String number, String address, String relation) {
         this(-1, name, number, address, relation);
     }
