@@ -222,6 +222,15 @@
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:visibility="gone" />
+        <Button
+            android:id="@+id/btnAddPatient"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Add Patient"
+            android:backgroundTint="#63703d"
+            android:textColor="#fcf9f2"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
 
         <Button
             android:id="@+id/deleteBtn"
@@ -247,15 +256,7 @@
             android:textStyle="bold" />
 
 
-        <Button
-            android:id="@+id/btnAddPatient"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Add Patient"
-            android:backgroundTint="#63703d"
-            android:textColor="#fcf9f2"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp" />
+
 
         <TextView
             android:id="@+id/patientListTitle"

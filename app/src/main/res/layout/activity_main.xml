@@ -6,7 +6,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f3e4bd">
+    android:background="@drawable/image1darkened"
+    >
 
     <TextView
         android:id="@+id/welcome"
@@ -28,7 +29,7 @@
         android:text="MediSync!"
         android:textSize="34sp"
         android:textStyle="bold"
-        android:textColor="#63703d"
+        android:textColor="#8BC34A"
         app:layout_constraintTop_toBottomOf="@id/welcome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -48,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="An application made for better quality care!"
-        android:textColor="#231f20"
+        android:textColor="#ffff"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/gotrav"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,15 +73,7 @@
             android:layout_height="wrap_content"
             android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/bgImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/image1darkened"
-                android:alpha="0.15"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
+
 
             <TextView
                 android:id="@+id/tvLogin"
