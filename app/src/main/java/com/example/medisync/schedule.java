@@ -21,7 +21,6 @@ import java.util.Locale;
 public class schedule extends AppCompatActivity {
 
     private Button inputButton;
-    private Button backbtn;
     private LinearLayout scheduleContainer;
 
     @Override
@@ -31,7 +30,7 @@ public class schedule extends AppCompatActivity {
 
         inputButton = findViewById(R.id.inputButton);
         scheduleContainer = findViewById(R.id.scheduleContainer);
-        backbtn = findViewById(R.id.backbtn);
+
 
         inputButton.setOnClickListener(v -> showScheduleDialog());
     }
