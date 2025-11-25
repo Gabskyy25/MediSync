@@ -36,7 +36,6 @@ public class PatientsAdapter extends RecyclerView.Adapter<PatientsAdapter.Patien
         return patients.size();
     }
 
-    // Method to update the list
     public void updatePatients(List<Patient> newPatients) {
         this.patients = newPatients;
         notifyDataSetChanged();

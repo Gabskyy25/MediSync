@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         TextView here = findViewById(R.id.Here);
         rememberMe = findViewById(R.id.radio);
 
-        // LOGIN BUTTON -----------------------------------------
         login.setOnClickListener(view -> {
             String email = emailField.getText().toString().trim();
             String password = passField.getText().toString().trim();
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
 
-                            // OPTIONAL: Remember me logic
                             if (rememberMe.isChecked()) {
                                 getSharedPreferences("MediSyncPrefs", MODE_PRIVATE)
                                         .edit()

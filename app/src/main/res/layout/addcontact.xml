@@ -7,7 +7,6 @@
     android:background="@drawable/backgroundinfo2"
     android:gravity="center_horizontal">
 
-    <!-- TITLE -->
     <TextView
         android:text="Add Contact"
         android:textSize="20sp"

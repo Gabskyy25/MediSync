@@ -25,7 +25,6 @@ public class info extends Fragment {
     private String mParam2;
 
     public info() {
-        // Required empty public constructor
     }
 
     /**

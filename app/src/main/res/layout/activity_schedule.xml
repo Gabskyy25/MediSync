@@ -40,7 +40,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- BUTTON -->
     <Button
         android:id="@+id/inputButton"
         android:layout_width="wrap_content"

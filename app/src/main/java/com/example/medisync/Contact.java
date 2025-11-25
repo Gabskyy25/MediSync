@@ -1,7 +1,7 @@
 package com.example.medisync;
 
 public class Contact {
-    private int id; // SQLite primary key
+    private int id;
     private String name;
     private String number;
     private String address;
