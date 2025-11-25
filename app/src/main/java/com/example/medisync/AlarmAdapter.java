@@ -1,7 +1,6 @@
 package com.example.medisync;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +8,6 @@ import androidx.annotation.NonNull;
 import android.widget.Switch;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> {
@@ -38,12 +34,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         holder.tvDescription.setText(alarm.description);
         holder.tvTime.setText(alarm.time);
         holder.switchEnable.setChecked(alarm.enabled);
-
         holder.tvDays.setText(formatDays(alarm.days));
 
-        holder.itemView.setOnClickListener(v -> {
-            showDayPicker(holder, alarm);
-        });
+        holder.itemView.setOnClickListener(v -> showDayPicker(holder, alarm));
     }
 
     @Override
@@ -53,20 +46,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
 
     private void showDayPicker(ViewHolder holder, AlarmModel alarm) {
         boolean[] checked = new boolean[7];
-        for (int d : alarm.days) {
-            checked[d - 2] = true;
-        }
+        for (int d : alarm.days) checked[d - 2] = true;
 
         new AlertDialog.Builder(holder.itemView.getContext())
                 .setTitle("Select Days")
                 .setMultiChoiceItems(dayNames, checked, (dialog, which, isChecked) -> checked[which] = isChecked)
                 .setPositiveButton("Save", (dialog, which) -> {
                     alarm.days.clear();
-                    for (int i = 0; i < 7; i++) {
-                        if (checked[i]) {
-                            alarm.days.add(i + 2);
-                        }
-                    }
+                    for (int i = 0; i < 7; i++) if (checked[i]) alarm.days.add(i + 2);
                     holder.tvDays.setText(formatDays(alarm.days));
                 })
                 .setNegativeButton("Cancel", null)
@@ -76,9 +63,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
     private String formatDays(List<Integer> days) {
         if (days.isEmpty()) return "No days";
         StringBuilder sb = new StringBuilder();
-        for (int d : days) {
-            sb.append(dayNames[d - 2]).append(" ");
-        }
+        for (int d : days) sb.append(dayNames[d - 2]).append(" ");
         return sb.toString();
     }
 

@@ -65,6 +65,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
+
             <EditText
                 android:id="@+id/etAlarmDescription"
                 android:layout_width="match_parent"

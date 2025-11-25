@@ -9,12 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -29,7 +27,6 @@ public class alarm extends AppCompatActivity {
     private RecyclerView recyclerAlarms;
     private List<AlarmModel> alarmList = new ArrayList<>();
     private AlarmAdapter adapter;
-
     SharedPreferences prefs;
     private static final String PREFS_NAME = "ALARMS";
 
@@ -63,14 +60,40 @@ public class alarm extends AppCompatActivity {
         String description = etAlarmDescription.getText().toString().trim();
         if (description.isEmpty()) description = "Alarm";
 
-        String time = String.format("%02d:%02d",
-                timePicker.getHour(), timePicker.getMinute());
+        int hour = timePicker.getHour();
+        int minute = timePicker.getMinute();
+
+        String time = String.format("%02d:%02d", hour, minute);
 
         alarmList.add(new AlarmModel(description, time, true, selectedDays));
         saveAlarms();
         adapter.notifyDataSetChanged();
 
+        scheduleAlarm(description, hour, minute);
+
         Toast.makeText(this, "Alarm Added!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void scheduleAlarm(String desc, int hour, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        Intent intent = new Intent(this, alarmreceiver.class);
+        intent.putExtra("ALARM_DESCRIPTION", desc);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, (int) System.currentTimeMillis(), intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 
     private void enableSwipeToDelete() {
@@ -117,7 +140,6 @@ public class alarm extends AppCompatActivity {
 
             List<Integer> days = new ArrayList<>();
 
-
             if (p.length >= 4) {
                 String dayStr = p[3].replace("[", "").replace("]", "");
                 if (!dayStr.isEmpty()) {
@@ -125,8 +147,6 @@ public class alarm extends AppCompatActivity {
                         days.add(Integer.parseInt(d.trim()));
                     }
                 }
-            } else {
-
             }
 
             alarmList.add(new AlarmModel(desc, time, enabled, days));

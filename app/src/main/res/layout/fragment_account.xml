@@ -182,7 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Birthdate (MM/DD/YYYY)"
-            android:inputType="date"
+
             android:background="@drawable/edittext_background"
             android:padding="15dp"
             android:textColor="#231f20"
@@ -194,7 +194,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Diseases"
-            android:inputType="date"
             android:background="@drawable/edittext_background"
             android:padding="15dp"
             android:textColor="#231f20"

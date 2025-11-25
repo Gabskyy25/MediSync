@@ -3,7 +3,6 @@ package com.example.medisync;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +15,7 @@ public class alarmring extends AppCompatActivity implements TextToSpeech.OnInitL
     private boolean isActive = true;
     private Handler repeatHandler;
     private Handler autoStopHandler;
-
-    private static final long AUTO_STOP_DURATION = 2 * 60 * 1000;
+    private static final long AUTO_STOP_DURATION = 120000;
     private static final long REPEAT_INTERVAL = 1000;
 
     @Override
@@ -56,47 +54,31 @@ public class alarmring extends AppCompatActivity implements TextToSpeech.OnInitL
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-
             int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA ||
-                    result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(this, "TTS language not supported", Toast.LENGTH_SHORT).show();
-                return;
+            if (result != TextToSpeech.LANG_MISSING_DATA &&
+                    result != TextToSpeech.LANG_NOT_SUPPORTED) {
+                speakRepeatedly();
             }
-
-            speakRepeatedly();
-        } else {
-            Toast.makeText(this, "TTS initialization failed", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void speakRepeatedly() {
         if (!isActive || textToSpeech == null) return;
-
         textToSpeech.speak(alarmDescription, TextToSpeech.QUEUE_FLUSH, null, "alarmID");
-
         repeatHandler.postDelayed(this::speakRepeatedly, REPEAT_INTERVAL);
     }
 
     private void stopAlarmAndClose() {
         isActive = false;
-
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-        }
-
+        if (textToSpeech != null) textToSpeech.stop();
         if (repeatHandler != null) repeatHandler.removeCallbacksAndMessages(null);
         if (autoStopHandler != null) autoStopHandler.removeCallbacksAndMessages(null);
-
         finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (textToSpeech != null) {
-            textToSpeech.shutdown();
-        }
+        if (textToSpeech != null) textToSpeech.shutdown();
     }
 }
