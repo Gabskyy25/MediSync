@@ -1,24 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/brown1"
-    tools:context=".signupcaregiver">
+    android:background="#f3e4bd">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp"
-        android:gravity="center">
+        android:paddingTop="80dp"
+        android:gravity="center"
+        android:layout_gravity="center">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:layout_gravity="center"
             app:cardCornerRadius="28dp"
             app:cardElevation="6dp">
 
@@ -26,17 +27,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="20dp"
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/tvLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/concertone"
                     android:text="Sign Up"
-                    android:textColor="#333333"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    android:textColor="#b56b37"
+                    android:textSize="26sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -44,6 +46,8 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:text="Caregiver"
+                    android:fontFamily="@font/fredoka"
+                    android:textColor="#231f20"
                     android:textStyle="bold" />
 
                 <EditText
@@ -53,8 +57,10 @@
                     android:layout_marginTop="20dp"
                     android:background="@drawable/edittext_background"
                     android:hint="Email"
+                    android:fontFamily="@font/fredoka"
                     android:inputType="textEmailAddress"
-                    android:padding="12dp" />
+                    android:padding="12dp"
+                    android:gravity="center_vertical" />
 
                 <EditText
                     android:id="@+id/editPassword"
@@ -63,8 +69,10 @@
                     android:layout_marginTop="12dp"
                     android:background="@drawable/edittext_background"
                     android:hint="Password"
+                    android:fontFamily="@font/fredoka"
                     android:inputType="textPassword"
-                    android:padding="12dp" />
+                    android:padding="12dp"
+                    android:gravity="center_vertical" />
 
                 <EditText
                     android:id="@+id/confPass"
@@ -74,7 +82,9 @@
                     android:background="@drawable/edittext_background"
                     android:hint="Confirm Password"
                     android:inputType="textPassword"
-                    android:padding="12dp" />
+                    android:fontFamily="@font/fredoka"
+                    android:padding="12dp"
+                    android:gravity="center_vertical" />
 
                 <EditText
                     android:id="@+id/phonenumber"
@@ -83,15 +93,18 @@
                     android:layout_marginTop="12dp"
                     android:background="@drawable/edittext_background"
                     android:hint="Phone Number"
+                    android:fontFamily="@font/fredoka"
                     android:inputType="phone"
-                    android:padding="12dp" />
+                    android:padding="12dp"
+                    android:gravity="center_vertical" />
 
                 <Button
                     android:id="@+id/btnsignup"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:layout_marginTop="24dp"
-                    android:backgroundTint="@color/brown4"
+                    android:layout_marginTop="22dp"
+                    android:backgroundTint="#63703d"
+                    android:fontFamily="@font/fredoka"
                     android:text="Sign Up"
                     android:textColor="#FFFFFF" />
 
@@ -99,11 +112,11 @@
                     android:id="@+id/gobacklogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:fontFamily="@font/fredoka"
                     android:layout_gravity="center"
+                    android:layout_marginTop="14dp"
                     android:text="Go back to login page"
                     android:textStyle="bold" />
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -111,9 +124,12 @@
             android:id="@+id/termspol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/fredoka"
             android:text="Terms and Policy"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp" />
-
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
+
+

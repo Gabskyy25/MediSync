@@ -14,7 +14,7 @@
         android:textSize="22sp"
         android:textStyle="bold"
         android:paddingBottom="10dp"
-        android:fontFamily="@font/fredoka"
+        android:fontFamily="@font/concertone"
         android:textColor="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".schedule"
-    android:background="#603620">
+    android:background="#f3e4bd">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -34,9 +33,9 @@
                 android:layout_height="wrap_content"
                 android:text="Schedule"
                 android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="#231f20"
-            android:layout_marginStart="14dp" />
+                android:fontFamily="@font/concertone"
+                android:textColor="#b56b37"
+                android:layout_marginStart="14dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -48,19 +47,20 @@
         android:layout_marginTop="30dp"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
+        android:fontFamily="@font/fredoka"
         android:text="Add a Schedule"
         android:textColor="#fcf9f2"
-    android:backgroundTint="#b56b37" />
+        android:backgroundTint="#63703d" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your Schedules"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#f3e4bd"
-    android:layout_marginTop="25dp"
-    android:layout_marginStart="16dp" />
+        android:fontFamily="@font/concertone"
+        android:textColor="#231f20"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="16dp" />
 
     <LinearLayout
         android:id="@+id/scheduleContainer"
@@ -69,6 +69,7 @@
         android:orientation="vertical"
         android:layout_margin="16dp"
         android:padding="6dp"
-        android:background="#C8C4C4"
-    android:clipToPadding="false" />
+        android:background="#ADAC9C"
+        android:clipToPadding="false" />
 </LinearLayout>
+

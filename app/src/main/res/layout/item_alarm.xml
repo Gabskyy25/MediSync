@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Take Medicine"
+            android:fontFamily="@font/fredoka"
             android:textStyle="bold"
             android:textColor="#231f20"
             android:textSize="18sp" />
@@ -30,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="07:30 AM"
+            android:fontFamily="@font/fredoka"
             android:textStyle="bold"
             android:textColor="#603620"
             android:textSize="16sp" />
@@ -39,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mon Tue Wed"
+            android:fontFamily="@font/fredoka"
             android:textColor="#63703d"
             android:textSize="13sp" />
     </LinearLayout>
@@ -46,8 +49,9 @@
     <Switch
         android:id="@+id/switchEnable"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:thumbTint="#b56b37"
         android:trackTint="#b5c37c" />
 
 </LinearLayout>
+

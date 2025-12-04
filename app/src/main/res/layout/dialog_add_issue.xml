@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Problem"
+        android:fontFamily="@font/concertone"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="#231f20"
@@ -20,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter issue"
+        android:fontFamily="@font/fredoka"
         android:padding="12dp"
         android:textColor="#231f20"
         android:textColorHint="#603620"
@@ -29,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Solution"
+        android:fontFamily="@font/concertone"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="#231f20"
@@ -40,9 +43,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter resolution"
+        android:fontFamily="@font/fredoka"
         android:padding="12dp"
         android:textColor="#231f20"
         android:textColorHint="#603620"
         android:background="@drawable/edittext_background" />
 
 </LinearLayout>
+
