@@ -1,39 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#fcf9f2">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#63703d"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center">
 
         <TextView
-            android:layout_width="388dp"
-            android:layout_height="49dp"
-            android:textColor="#fcf9f2"
-            android:fontFamily="@font/concertone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Patient Info"
-            android:textSize="28sp" />
-
-
+            android:textSize="28sp"
+            android:textColor="#fcf9f2"
+            android:fontFamily="@font/concertone" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
-    </ScrollView>
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
+            <EditText
+                android:id="@+id/patientName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Patient Name"
+                android:fontFamily="@font/fredoka"
+                android:textColor="#231f20"
+                android:padding="15dp"
+                android:background="@drawable/edittext_background"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/patientAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Age"
+                android:inputType="number"
+                android:fontFamily="@font/fredoka"
+                android:textColor="#231f20"
+                android:padding="15dp"
+                android:background="@drawable/edittext_background"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp" />
+
+            <EditText
+                android:id="@+id/patientBirthdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Birthdate (MM/DD/YYYY)"
+                android:focusable="false"
+                android:clickable="true"
+                android:fontFamily="@font/fredoka"
+                android:textColor="#231f20"
+                android:padding="15dp"
+                android:background="@drawable/edittext_background"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp" />
+
+            <EditText
+                android:id="@+id/patientDisease"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Diseases"
+                android:fontFamily="@font/fredoka"
+                android:textColor="#231f20"
+                android:padding="15dp"
+                android:background="@drawable/edittext_background"
+                android:textSize="17sp"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Save Patient"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#63703d"
+                android:textColor="#fcf9f2"
+                android:fontFamily="@font/fredoka"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/deletePatientBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Delete All"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#603620"
+                android:textColor="#fcf9f2"
+                android:fontFamily="@font/fredoka"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saved Patients"
+                android:fontFamily="@font/concertone"
+                android:textColor="#231f20"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="25dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/patientRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="10dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,63 +1,107 @@
 package com.example.medisync;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link info#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Calendar;
+import java.util.List;
+
 public class info extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private EditText name, age, birthdate, disease;
+    private Button saveBtn, deleteBtn;
+    private RecyclerView recycler;
+    private PatientsAdapter adapter;
+    private DatabaseHelper db;
+    private List<Patient> list;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public info() {}
 
-    public info() {
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment info.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static info newInstance(String param1, String param2) {
-        info fragment = new info();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_info, container, false);
+
+        name = v.findViewById(R.id.patientName);
+        age = v.findViewById(R.id.patientAge);
+        birthdate = v.findViewById(R.id.patientBirthdate);
+        disease = v.findViewById(R.id.patientDisease);
+        saveBtn = v.findViewById(R.id.saveBtn);
+        deleteBtn = v.findViewById(R.id.deletePatientBtn);
+        recycler = v.findViewById(R.id.patientRecycler);
+
+        db = new DatabaseHelper(getContext());
+        list = db.getAllPatients();
+        adapter = new PatientsAdapter(list);
+
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        recycler.setAdapter(adapter);
+
+        birthdate.setOnClickListener(vw -> showDatePicker());
+
+        saveBtn.setOnClickListener(view -> {
+            savePatient();
+            clearFields();
+            refreshList();
+        });
+
+        deleteBtn.setOnClickListener(view -> {
+            db.deleteAllPatients();
+            refreshList();
+        });
+
+        return v;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_info, container, false);
+    private void showDatePicker() {
+        Calendar c = Calendar.getInstance();
+        int y = c.get(Calendar.YEAR);
+        int m = c.get(Calendar.MONTH);
+        int d = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dp = new DatePickerDialog(
+                getContext(),
+                (view, year, month, day) -> {
+                    String date = (month + 1) + "/" + day + "/" + year;
+                    birthdate.setText(date);
+                },
+                y, m, d
+        );
+        dp.show();
+    }
+
+    private void savePatient() {
+        String n = name.getText().toString().trim();
+        String a = age.getText().toString().trim();
+        if (n.isEmpty() || a.isEmpty()) return;
+
+        int ageInt = Integer.parseInt(a);
+        String b = birthdate.getText().toString().trim();
+        String d = disease.getText().toString().trim();
+
+        db.insertPatient(new Patient(n, ageInt, b, d));
+    }
+
+    private void refreshList() {
+        list = db.getAllPatients();
+        adapter.updatePatients(list);
+    }
+
+    private void clearFields() {
+        name.setText("");
+        age.setText("");
+        birthdate.setText("");
+        disease.setText("");
     }
 }

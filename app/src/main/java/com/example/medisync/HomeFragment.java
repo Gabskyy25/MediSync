@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +24,9 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView slider;
     private Handler handler = new Handler();
-    private int position = 0;
+    private int position = 1000;
+    private LinearLayout indicatorLayout;
+    private int imageCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +47,7 @@ public class HomeFragment extends Fragment {
         scheduleBtn.setOnClickListener(v -> startActivity(new Intent(getActivity(), schedule.class)));
 
         slider = view.findViewById(R.id.imageSlider);
+        indicatorLayout = view.findViewById(R.id.indicatorLayout);
 
         List<Integer> images = Arrays.asList(
                 R.drawable.image1,
@@ -53,6 +57,8 @@ public class HomeFragment extends Fragment {
                 R.drawable.image5,
                 R.drawable.image6
         );
+
+        imageCount = images.size();
 
         ImageSliderAdapter adapter = new ImageSliderAdapter(getContext(), images);
         slider.setAdapter(adapter);
@@ -64,16 +70,48 @@ public class HomeFragment extends Fragment {
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(slider);
 
+        setupIndicators(imageCount);
+        selectIndicator(0);
+
+        slider.scrollToPosition(position);
+
+        slider.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int realPos = ((LinearLayoutManager) slider.getLayoutManager())
+                            .findFirstVisibleItemPosition() % imageCount;
+                    selectIndicator(realPos);
+                }
+            }
+        });
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (position == images.size()) {
-                    position = 0;
-                }
-                slider.smoothScrollToPosition(position);
                 position++;
+                slider.smoothScrollToPosition(position);
                 handler.postDelayed(this, 3000);
             }
         }, 3000);
+    }
+
+    private void setupIndicators(int count) {
+        indicatorLayout.removeAllViews();
+        for (int i = 0; i < count; i++) {
+            View dot = new View(getContext());
+            dot.setBackgroundResource(R.drawable.indicator_inactive);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 20);
+            params.setMargins(8, 0, 8, 0);
+            indicatorLayout.addView(dot, params);
+        }
+    }
+
+    private void selectIndicator(int index) {
+        for (int i = 0; i < indicatorLayout.getChildCount(); i++) {
+            View dot = indicatorLayout.getChildAt(i);
+            if (i == index) dot.setBackgroundResource(R.drawable.indicator_active);
+            else dot.setBackgroundResource(R.drawable.indicator_inactive);
+        }
     }
 }

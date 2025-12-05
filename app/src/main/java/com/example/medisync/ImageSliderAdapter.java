@@ -30,12 +30,12 @@ public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.imageView.setImageResource(imageList.get(position));
+        holder.imageView.setImageResource(imageList.get(position % imageList.size()));
     }
 
     @Override
     public int getItemCount() {
-        return imageList.size();
+        return Integer.MAX_VALUE;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
