@@ -146,16 +146,6 @@
             android:layout_height="2dp"
             android:background="#b56b37" />
 
-        <Button
-            android:id="@+id/deleteBtn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Delete Account"
-            android:backgroundTint="#603620"
-            android:fontFamily="@font/fredoka"
-            android:textColor="#fcf9f2"
-            android:textStyle="bold"
-            android:layout_marginTop="40dp" />
 
         <Button
             android:id="@+id/button"
