@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -17,26 +18,22 @@
         android:theme="@style/Theme.MediSync"
         tools:targetApi="31">
 
+
         <activity
             android:name=".resetpassword"
             android:exported="false" />
-
         <activity
             android:name=".notification"
             android:exported="false" />
-
         <activity
             android:name=".contactinfo"
             android:exported="false" />
-
         <activity
             android:name=".schedule"
             android:exported="false" />
-
         <activity
             android:name=".alarm"
             android:exported="false" />
-
         <activity
             android:name=".alarmring"
             android:excludeFromRecents="true"
@@ -45,6 +42,7 @@
             android:turnScreenOn="true">
             <intent-filter>
                 <action android:name="com.example.medisync.ALARM_RING" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -56,20 +54,18 @@
         <activity
             android:name=".MainMenu"
             android:exported="false" />
-
         <activity
             android:name=".signupcaregiver"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

@@ -1,26 +1,26 @@
 package com.example.medisync;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.speech.tts.TextToSpeech;
 import android.widget.Button;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
-public class alarmring extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class alarmring extends AppCompatActivity {
 
-    private TextToSpeech textToSpeech;
-    private String alarmDescription;
-    private boolean isActive = true;
-    private Handler repeatHandler;
-    private Handler autoStopHandler;
-    private static final long AUTO_STOP_DURATION = 120000;
-    private static final long REPEAT_INTERVAL = 1000;
+    private TextToSpeech tts;
+    private Handler handler = new Handler();
+    private boolean active = true;
+    private Vibrator vibrator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
         setContentView(R.layout.activity_alarmring);
 
         getWindow().addFlags(
@@ -29,56 +29,58 @@ public class alarmring extends AppCompatActivity implements TextToSpeech.OnInitL
                         android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
         );
 
-        Button btnDismiss = findViewById(R.id.btnDismiss);
+        String text = getIntent().getStringExtra("DESC");
+        if (text == null || text.isEmpty()) text = "Alarm";
 
-        alarmDescription = getIntent().getStringExtra("ALARM_DESCRIPTION");
-        if (alarmDescription == null || alarmDescription.isEmpty()) {
-            alarmDescription = "Alarm";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            vibrator = ((VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE)).getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
 
-        textToSpeech = new TextToSpeech(this, this);
+        startVibration();
 
-        repeatHandler = new Handler();
-        autoStopHandler = new Handler();
-
-        autoStopHandler.postDelayed(() -> {
-            if (isActive) {
-                Toast.makeText(this, "Alarm auto-stopped", Toast.LENGTH_LONG).show();
-                stopAlarmAndClose();
+        String finalText = text;
+        tts = new TextToSpeech(this, s -> {
+            if (s == TextToSpeech.SUCCESS) {
+                tts.setLanguage(Locale.US);
+                speak(finalText);
             }
-        }, AUTO_STOP_DURATION);
+        });
 
-        btnDismiss.setOnClickListener(v -> stopAlarmAndClose());
+        Button dismiss = findViewById(R.id.btnDismiss);
+        dismiss.setOnClickListener(v -> stopAlarm());
     }
 
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-            if (result != TextToSpeech.LANG_MISSING_DATA &&
-                    result != TextToSpeech.LANG_NOT_SUPPORTED) {
-                speakRepeatedly();
-            }
+    private void speak(String t) {
+        if (!active) return;
+        tts.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ALARM");
+        handler.postDelayed(() -> speak(t), 2500);
+    }
+
+    private void startVibration() {
+        long[] pattern = {0, 800, 400, 800, 400};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0));
+        } else {
+            vibrator.vibrate(pattern, 0);
         }
     }
 
-    private void speakRepeatedly() {
-        if (!isActive || textToSpeech == null) return;
-        textToSpeech.speak(alarmDescription, TextToSpeech.QUEUE_FLUSH, null, "alarmID");
-        repeatHandler.postDelayed(this::speakRepeatedly, REPEAT_INTERVAL);
-    }
-
-    private void stopAlarmAndClose() {
-        isActive = false;
-        if (textToSpeech != null) textToSpeech.stop();
-        if (repeatHandler != null) repeatHandler.removeCallbacksAndMessages(null);
-        if (autoStopHandler != null) autoStopHandler.removeCallbacksAndMessages(null);
+    private void stopAlarm() {
+        active = false;
+        handler.removeCallbacksAndMessages(null);
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        if (vibrator != null) vibrator.cancel();
         finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (textToSpeech != null) textToSpeech.shutdown();
+        if (vibrator != null) vibrator.cancel();
     }
 }

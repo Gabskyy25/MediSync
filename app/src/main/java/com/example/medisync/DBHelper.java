@@ -54,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_ISSUE, issue.getIssue());
         values.put(COL_RESOLUTION, issue.getResolution());
-        values.put(COL_SAVED_AT, issue.getDateAdded());
+        values.put(COL_SAVED_AT, System.currentTimeMillis());
         long id = db.insert(TABLE_ISSUES, null, values);
         db.close();
         return id;

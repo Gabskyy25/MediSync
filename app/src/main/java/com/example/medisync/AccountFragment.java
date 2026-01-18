@@ -45,7 +45,7 @@ public class AccountFragment extends Fragment {
         emailText = view.findViewById(R.id.gmail);
         phoneText = view.findViewById(R.id.PhoneNo);
 
-        deleteBtn = view.findViewById(R.id.deleteBtn);
+        
         logOutBtn = view.findViewById(R.id.button);
 
         loadUserInfo();

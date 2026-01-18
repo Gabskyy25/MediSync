@@ -76,6 +76,16 @@
                 android:gravity="end"
                 android:textColor="#92a0ad"
                 android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/gmail1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#92a0ad"
+                android:text="jangabrieldeguzman2531@gmail.com"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <View
@@ -107,6 +117,16 @@
                 android:gravity="end"
                 android:textColor="#92a0ad"
                 android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/phone1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#92a0ad"
+                android:text="09650767631"
+                android:textSize="15sp"/>
         </LinearLayout>
 
         <View

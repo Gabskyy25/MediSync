@@ -6,13 +6,10 @@ import android.content.Intent;
 
 public class alarmreceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
-        String description = intent.getStringExtra("ALARM_DESCRIPTION");
-        if (description == null) description = "Alarm";
-
-        Intent i = new Intent(context, alarmring.class);
-        i.putExtra("ALARM_DESCRIPTION", description);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
+    public void onReceive(Context c, Intent i) {
+        Intent r = new Intent(c, alarmring.class);
+        r.putExtra("DESC", i.getStringExtra("DESC"));
+        r.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        c.startActivity(r);
     }
 }

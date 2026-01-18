@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import androidx.cardview.widget.CardView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,9 +40,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageView alarmBtn = view.findViewById(R.id.alarm);
-        ImageView contactBtn = view.findViewById(R.id.contact);
-        ImageView scheduleBtn = view.findViewById(R.id.schedule);
+        CardView alarmBtn = view.findViewById(R.id.alarm);
+        CardView contactBtn = view.findViewById(R.id.contact);
+        CardView scheduleBtn = view.findViewById(R.id.schedule);
+
 
         alarmBtn.setOnClickListener(v -> startActivity(new Intent(getActivity(), alarm.class)));
         contactBtn.setOnClickListener(v -> startActivity(new Intent(getActivity(), contactinfo.class)));

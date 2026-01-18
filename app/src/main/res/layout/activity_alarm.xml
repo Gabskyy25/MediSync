@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#603620"
+    android:background="#E9FBF4"
     tools:context=".alarm">
 
     <androidx.cardview.widget.CardView
