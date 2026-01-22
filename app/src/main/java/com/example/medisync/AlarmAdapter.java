@@ -6,9 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
@@ -20,6 +21,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
 
     private final List<AlarmModel> list;
     private final Listener listener;
+
     private final String[] dayNames = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 
     public AlarmAdapter(List<AlarmModel> list, Listener listener) {
@@ -29,20 +31,26 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
 
     @NonNull
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup p, int v) {
-        return new Holder(LayoutInflater.from(p.getContext()).inflate(R.layout.item_alarm, p, false));
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_alarm, parent, false);
+        return new Holder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder h, int p) {
-        AlarmModel m = list.get(p);
+    public void onBindViewHolder(@NonNull Holder h, int position) {
+        AlarmModel m = list.get(position);
+
         h.desc.setText(m.description);
-        h.time.setText(String.format("%02d:%02d", m.hour, m.minute));
+
+        // ✅ FIX: USE SAVED TIME STRING
+        h.time.setText(m.time);
+
         h.days.setText(formatDays(m.days));
         h.toggle.setChecked(m.enabled);
 
-        h.toggle.setOnCheckedChangeListener((b, c) -> {
-            m.enabled = c;
+        h.toggle.setOnCheckedChangeListener((buttonView, checked) -> {
+            m.enabled = checked;
             listener.onToggle(m);
         });
 
@@ -51,14 +59,20 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
 
     private void showDayPicker(Holder h, AlarmModel m) {
         boolean[] checked = new boolean[7];
-        for (int d : m.days) checked[d - 1] = true;
+        for (int d : m.days) {
+            if (d >= 1 && d <= 7) checked[d - 1] = true;
+        }
 
         new AlertDialog.Builder(h.itemView.getContext())
                 .setTitle("Select Days")
-                .setMultiChoiceItems(dayNames, checked, (d, i, c) -> checked[i] = c)
-                .setPositiveButton("Save", (d, i) -> {
+                .setMultiChoiceItems(dayNames, checked, (dialog, which, isChecked) ->
+                        checked[which] = isChecked
+                )
+                .setPositiveButton("Save", (dialog, which) -> {
                     m.days.clear();
-                    for (int x = 0; x < 7; x++) if (checked[x]) m.days.add(x + 1);
+                    for (int i = 0; i < 7; i++) {
+                        if (checked[i]) m.days.add(i + 1);
+                    }
                     h.days.setText(formatDays(m.days));
                     listener.onDaysChanged(m);
                 })
@@ -67,19 +81,27 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
     }
 
     private String formatDays(List<Integer> days) {
-        if (days.isEmpty()) return "No days";
-        StringBuilder s = new StringBuilder();
-        for (int d : days) s.append(dayNames[d - 1]).append(" ");
-        return s.toString().trim();
+        if (days == null || days.isEmpty()) return "No days";
+
+        StringBuilder sb = new StringBuilder();
+        for (int d : days) {
+            if (d >= 1 && d <= 7) {
+                sb.append(dayNames[d - 1]).append(" ");
+            }
+        }
+        return sb.toString().trim();
     }
 
     @Override
-    public int getItemCount() { return list.size(); }
+    public int getItemCount() {
+        return list.size();
+    }
 
     static class Holder extends RecyclerView.ViewHolder {
         TextView desc, time, days;
         Switch toggle;
-        Holder(View v) {
+
+        Holder(@NonNull View v) {
             super(v);
             desc = v.findViewById(R.id.tvDescription);
             time = v.findViewById(R.id.tvTime);
