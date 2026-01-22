@@ -27,12 +27,12 @@ public class contactinfo extends AppCompatActivity {
     private ArrayList<Contact> filteredList;
     private ContactAdapter adapter;
     private ContactDBHelper dbHelper;
+    private NotificationDBHelper notificationDB; // ✅ ADD
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contactinfo);
-
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewContacts);
         ImageView fabAddInfo = findViewById(R.id.btnAddInfo);
@@ -41,6 +41,8 @@ public class contactinfo extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         dbHelper = new ContactDBHelper(this);
+        notificationDB = new NotificationDBHelper(this); // ✅ INIT
+
         contactList = dbHelper.getAllContacts();
         filteredList = new ArrayList<>(contactList);
 
@@ -61,8 +63,7 @@ public class contactinfo extends AppCompatActivity {
         SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) { return false; }
+            @Override public boolean onQueryTextSubmit(String query) { return false; }
 
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -76,15 +77,14 @@ public class contactinfo extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.action_sort_name) {
+        if (item.getItemId() == R.id.action_sort_name) {
             Collections.sort(filteredList, Comparator.comparing(Contact::getName));
             adapter.notifyDataSetChanged();
             return true;
         }
 
-        if (id == R.id.action_sort_relation) {
+        if (item.getItemId() == R.id.action_sort_relation) {
             Collections.sort(filteredList, Comparator.comparing(Contact::getRelation));
             adapter.notifyDataSetChanged();
             return true;
@@ -106,7 +106,6 @@ public class contactinfo extends AppCompatActivity {
                 }
             }
         }
-
         adapter.notifyDataSetChanged();
     }
 
@@ -114,13 +113,24 @@ public class contactinfo extends AppCompatActivity {
         adapter.setOnItemLongClickListener(position -> {
             Contact contact = filteredList.get(position);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(contact.getName())
-                    .setItems(new CharSequence[]{"Edit", "Delete"}, (dialogInterface, i) -> {
+            new AlertDialog.Builder(this)
+                    .setTitle(contact.getName())
+                    .setItems(new CharSequence[]{"Edit", "Delete"}, (d, i) -> {
                         if (i == 0) {
                             showEditContactDialog(contact, position);
                         } else {
+
+                            // ✅ DELETE CONTACT
                             dbHelper.deleteContact(contact.getId());
+
+                            // ✅ ADD DELETE NOTIFICATION
+                            notificationDB.addNotification(
+                                    "Contact Deleted",
+                                    contact.getName() + " was removed",
+                                    "CONTACT",
+                                    contact.getId()
+                            );
+
                             contactList.remove(contact);
                             filteredList.remove(position);
                             adapter.notifyItemRemoved(position);
@@ -141,6 +151,7 @@ public class contactinfo extends AppCompatActivity {
         Button btnConfirm = dialog.findViewById(R.id.btnConfirm);
 
         btnConfirm.setOnClickListener(v -> {
+
             String name = etName.getText().toString();
             String number = etNumber.getText().toString();
             String address = etAddress.getText().toString();
@@ -149,9 +160,18 @@ public class contactinfo extends AppCompatActivity {
             String relation = rb != null ? rb.getText().toString() : "";
 
             if (!name.isEmpty() && !number.isEmpty() && !address.isEmpty() && !relation.isEmpty()) {
+
                 Contact contact = new Contact(name, number, address, relation);
                 long id = dbHelper.addContact(contact);
                 contact.setId((int) id);
+
+                // ✅ ADD NOTIFICATION
+                notificationDB.addNotification(
+                        "New Contact Added",
+                        name + " was added",
+                        "CONTACT",
+                        contact.getId()
+                );
 
                 contactList.add(contact);
                 filteredList.add(contact);
@@ -189,6 +209,7 @@ public class contactinfo extends AppCompatActivity {
         btnConfirm.setText("Update");
 
         btnConfirm.setOnClickListener(v -> {
+
             String name = etName.getText().toString();
             String number = etNumber.getText().toString();
             String address = etAddress.getText().toString();
@@ -199,7 +220,6 @@ public class contactinfo extends AppCompatActivity {
             if (!name.isEmpty() && !number.isEmpty() && !address.isEmpty() && !relation.isEmpty()) {
 
                 Contact updated = new Contact(contact.getId(), name, number, address, relation);
-
                 dbHelper.updateContact(updated);
 
                 int originalIndex = contactList.indexOf(contact);

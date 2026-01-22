@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COL_SAVED_AT = "saved_at";
 
     private static DBHelper sInstance;
+    private Context context;
 
     public static synchronized DBHelper getInstance(Context context) {
         if (sInstance == null) {
@@ -31,6 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -49,35 +51,62 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /* ================= ADD ISSUE ================= */
+
     public long addIssue(Issue issue) {
         SQLiteDatabase db = this.getWritableDatabase();
+
         ContentValues values = new ContentValues();
         values.put(COL_ISSUE, issue.getIssue());
         values.put(COL_RESOLUTION, issue.getResolution());
         values.put(COL_SAVED_AT, System.currentTimeMillis());
+
         long id = db.insert(TABLE_ISSUES, null, values);
         db.close();
+
+        // ✅ ISSUE ADDED NOTIFICATION (FIRES ONCE)
+        if (id != -1) {
+            NotificationDBHelper notificationDB =
+                    new NotificationDBHelper(context);
+
+            notificationDB.addNotification(
+                    "Issue Added",
+                    issue.getIssue(),
+                    "ISSUE",
+                    (int) id
+            );
+        }
+
         return id;
     }
 
+    /* ================= GET ALL ISSUES ================= */
+
     public List<Issue> getAllIssues() {
         List<Issue> list = new ArrayList<>();
-        String select = "SELECT * FROM " + TABLE_ISSUES + " ORDER BY " + COL_SAVED_AT + " DESC";
+        String select = "SELECT * FROM " + TABLE_ISSUES +
+                " ORDER BY " + COL_SAVED_AT + " DESC";
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(select, null);
+
         if (c.moveToFirst()) {
             do {
                 long id = c.getLong(c.getColumnIndexOrThrow(COL_ID));
                 String issue = c.getString(c.getColumnIndexOrThrow(COL_ISSUE));
                 String resolution = c.getString(c.getColumnIndexOrThrow(COL_RESOLUTION));
                 long savedAt = c.getLong(c.getColumnIndexOrThrow(COL_SAVED_AT));
+
                 list.add(new Issue(id, issue, resolution, savedAt));
             } while (c.moveToNext());
         }
+
         c.close();
         db.close();
         return list;
     }
+
+    /* ================= DELETE ISSUE ================= */
 
     public void deleteIssue(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -85,12 +114,17 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /* ================= UPDATE ISSUE ================= */
+
     public void updateIssue(long id, String issue, String resolution) {
         SQLiteDatabase db = this.getWritableDatabase();
+
         ContentValues values = new ContentValues();
         values.put(COL_ISSUE, issue);
         values.put(COL_RESOLUTION, resolution);
-        db.update(TABLE_ISSUES, values, COL_ID + "=?", new String[]{String.valueOf(id)});
+
+        db.update(TABLE_ISSUES, values, COL_ID + "=?",
+                new String[]{String.valueOf(id)});
         db.close();
     }
 }

@@ -21,18 +21,25 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
     private List<Issue> issueList;
     private DBHelper db;
     private Runnable onUpdated;
+    private NotificationDBHelper notificationDB;
 
-    public IssueAdapter(Context context, List<Issue> issueList, DBHelper db, Runnable onUpdated) {
+    public IssueAdapter(Context context,
+                        List<Issue> issueList,
+                        DBHelper db,
+                        Runnable onUpdated) {
+
         this.context = context;
         this.issueList = issueList;
         this.db = db;
         this.onUpdated = onUpdated;
+        this.notificationDB = new NotificationDBHelper(context);
     }
 
     @NonNull
     @Override
     public IssueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_issue, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_issue, parent, false);
         return new IssueViewHolder(view);
     }
 
@@ -44,25 +51,51 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
         holder.textResolution.setText(issue.getResolution());
         holder.textDate.setText("Saved at: " + issue.getDateAdded());
 
+        // 🗑 DELETE ISSUE
         holder.btnDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("Delete")
                     .setMessage("Delete this issue?")
-                    .setPositiveButton("Yes", (d, w) -> {
-                        db.deleteIssue(issue.getId());
-                        issueList.remove(position);
-                        notifyItemRemoved(position);
+                    .setPositiveButton("Yes", (dialog, which) -> {
+
+                        int pos = holder.getBindingAdapterPosition();
+                        if (pos == RecyclerView.NO_POSITION) return;
+
+                        Issue removed = issueList.get(pos);
+
+                        // DELETE FROM DATABASE
+                        db.deleteIssue(removed.getId());
+
+                        // REMOVE FROM LIST
+                        issueList.remove(pos);
+                        notifyItemRemoved(pos);
+
+                        // ✅ TOAST
+                        Toast.makeText(context,
+                                "Issue deleted",
+                                Toast.LENGTH_SHORT).show();
+
+                        // ✅ NOTIFICATION (REMOVED)
+                        notificationDB.addNotification(
+                                "Issue Removed",
+                                removed.getIssue() + " was deleted",
+                                "ISSUE",
+                                (int) removed.getId()
+                        );
+
                         onUpdated.run();
                     })
                     .setNegativeButton("No", null)
                     .show();
         });
 
+        // ✏️ EDIT ISSUE
         holder.btnEdit.setOnClickListener(v -> openEditDialog(issue, position));
     }
 
     private void openEditDialog(Issue issue, int position) {
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_issue, null);
+        View dialogView = LayoutInflater.from(context)
+                .inflate(R.layout.dialog_add_issue, null);
 
         EditText editIssue = dialogView.findViewById(R.id.editIssue);
         EditText editResolution = dialogView.findViewById(R.id.editResolution);
@@ -74,17 +107,22 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
                 .setTitle("Edit Issue")
                 .setView(dialogView)
                 .setPositiveButton("Save", (dialog, which) -> {
+
                     String newIssue = editIssue.getText().toString().trim();
                     String newResolution = editResolution.getText().toString().trim();
 
                     if (newIssue.isEmpty() || newResolution.isEmpty()) {
-                        Toast.makeText(context, "Empty fields", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,
+                                "Empty fields",
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     db.updateIssue(issue.getId(), newIssue, newResolution);
+
                     issue.setIssue(newIssue);
                     issue.setResolution(newResolution);
+
                     notifyItemChanged(position);
                     onUpdated.run();
                 })
@@ -96,6 +134,8 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
     public int getItemCount() {
         return issueList.size();
     }
+
+    /* ================= VIEW HOLDER ================= */
 
     public static class IssueViewHolder extends RecyclerView.ViewHolder {
 

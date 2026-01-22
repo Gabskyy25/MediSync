@@ -1,27 +1,37 @@
 package com.example.medisync;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class schedule extends AppCompatActivity {
 
     private Button inputButton;
     private LinearLayout scheduleContainer;
+
+    private SharedPreferences prefs;
+    private static final String PREF_NAME = "SCHEDULES";
+
+    private NotificationDBHelper notificationDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,89 +41,167 @@ public class schedule extends AppCompatActivity {
         inputButton = findViewById(R.id.inputButton);
         scheduleContainer = findViewById(R.id.scheduleContainer);
 
+        prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        notificationDB = new NotificationDBHelper(this);
+
+        loadSchedules();
 
         inputButton.setOnClickListener(v -> showScheduleDialog());
     }
 
+    /* ================= ADD SCHEDULE ================= */
+
     private void showScheduleDialog() {
-        final EditText input = new EditText(this);
+        EditText input = new EditText(this);
         input.setHint("Enter schedule details");
 
         new AlertDialog.Builder(this)
                 .setTitle("For:")
                 .setView(input)
-                .setPositiveButton("Next", (dialog, which) -> {
-                    String scheduleTitle = input.getText().toString().trim();
-                    if (!scheduleTitle.isEmpty()) {
-                        pickDateTime(scheduleTitle);
+                .setPositiveButton("Next", (d, w) -> {
+                    String title = input.getText().toString().trim();
+                    if (!title.isEmpty()) {
+                        pickDateTime(title);
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void pickDateTime(String scheduleTitle) {
-        final Calendar calendar = Calendar.getInstance();
+    private void pickDateTime(String title) {
+        Calendar calendar = Calendar.getInstance();
 
-        DatePickerDialog datePicker = new DatePickerDialog(this,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        new DatePickerDialog(this, (v, y, m, d) -> {
+            calendar.set(y, m, d);
 
-                    TimePickerDialog timePicker = new TimePickerDialog(this,
-                            (timeView, hourOfDay, minute) -> {
-                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                calendar.set(Calendar.MINUTE, minute);
+            new TimePickerDialog(this, (tv, h, min) -> {
+                calendar.set(Calendar.HOUR_OF_DAY, h);
+                calendar.set(Calendar.MINUTE, min);
+                addSchedule(title, calendar.getTime());
+            }, calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE), false).show();
 
-                                addScheduleToLayout(scheduleTitle, calendar.getTime());
-                            },
-                            calendar.get(Calendar.HOUR_OF_DAY),
-                            calendar.get(Calendar.MINUTE),
-                            false);
-                    timePicker.show();
-
-                },
-                calendar.get(Calendar.YEAR),
+        }, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-
-        datePicker.show();
+                calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void addScheduleToLayout(String title, Date dateTime) {
+    private void addSchedule(String title, Date date) {
+        int scheduleId = (int) System.currentTimeMillis();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
-        String scheduleDate = dateFormat.format(dateTime);
+        SimpleDateFormat df =
+                new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
 
+        String data = title + "|" + df.format(date) + "|" + scheduleId;
 
-        SimpleDateFormat timeStampFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a", Locale.getDefault());
-        String createdAt = timeStampFormat.format(new Date());
+        saveSchedule(data);
+        renderSchedule(data);
 
+        // ✅ Schedule Added notification
+        notificationDB.addNotification(
+                "Schedule Added",
+                title + " scheduled on " + df.format(date),
+                "SCHEDULE",
+                scheduleId
+        );
+    }
 
-        View scheduleItem = getLayoutInflater().inflate(R.layout.schedule_item, null);
+    /* ================= RENDER + SWIPE ================= */
 
+    private void renderSchedule(String data) {
+        String[] parts = data.split("\\|");
 
-        TextView scheduleText = scheduleItem.findViewById(R.id.scheduleText);
-        /*Button deleteBtn = scheduleItem.findViewById(R.id.deleteBtn);
-        Button alarmBtn = scheduleItem.findViewById(R.id.alarmBtn);*/
+        String title = parts[0];
+        String time = parts[1];
+        int id = Integer.parseInt(parts[2]);
 
+        View item = getLayoutInflater().inflate(R.layout.schedule_item, null);
+        TextView txt = item.findViewById(R.id.scheduleText);
 
-        scheduleText.setText("For: " + title + "\nOn: " + scheduleDate + "\nAdded at: " + createdAt);
+        txt.setText("For: " + title + "\nOn: " + time);
 
+        final float[] startX = new float[1];
 
-        /*deleteBtn.setOnClickListener(v -> scheduleContainer.removeView(scheduleItem));
+        item.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
 
+                case MotionEvent.ACTION_DOWN:
+                    startX[0] = event.getX();
+                    return true;
 
-        alarmBtn.setOnClickListener(v -> {
+                case MotionEvent.ACTION_MOVE:
+                    float deltaX = event.getX() - startX[0];
+                    v.setTranslationX(deltaX);
+                    return true;
 
-            Intent intent = new Intent(schedule.this, alarm.class);
-            startActivity(intent);
-        });*/
+                case MotionEvent.ACTION_UP:
+                    float diffX = event.getX() - startX[0];
 
+                    if (Math.abs(diffX) > 200) {
+                        swipeDeleteAnimation(v, data, title, id);
+                    } else {
+                        v.animate().translationX(0).setDuration(200).start();
+                    }
+                    return true;
+            }
+            return false;
+        });
 
+        scheduleContainer.addView(item);
+    }
 
+    private void swipeDeleteAnimation(View item, String data, String title, int id) {
 
-        scheduleContainer.addView(scheduleItem);
+        TranslateAnimation slideOut =
+                new TranslateAnimation(0, item.getWidth(), 0, 0);
+        slideOut.setDuration(250);
+        slideOut.setFillAfter(true);
+
+        AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);
+        fadeOut.setDuration(250);
+        fadeOut.setFillAfter(true);
+
+        item.startAnimation(slideOut);
+        item.startAnimation(fadeOut);
+
+        item.postDelayed(() -> {
+            scheduleContainer.removeView(item);
+            deleteSchedule(data);
+
+            // ✅ KEEP "Schedule Added"
+            // ❌ DO NOT delete it anymore
+
+            // ✅ ADD Schedule Deleted notification
+            notificationDB.addNotification(
+                    "Schedule Deleted",
+                    title + " was removed",
+                    "SCHEDULE",
+                    id
+            );
+
+        }, 250);
+    }
+
+    /* ================= STORAGE ================= */
+
+    private void saveSchedule(String data) {
+        Set<String> set = prefs.getStringSet("LIST", new HashSet<>());
+        Set<String> copy = new HashSet<>(set);
+        copy.add(data);
+        prefs.edit().putStringSet("LIST", copy).apply();
+    }
+
+    private void deleteSchedule(String data) {
+        Set<String> set = prefs.getStringSet("LIST", new HashSet<>());
+        Set<String> copy = new HashSet<>(set);
+        copy.remove(data);
+        prefs.edit().putStringSet("LIST", copy).apply();
+    }
+
+    private void loadSchedules() {
+        Set<String> set = prefs.getStringSet("LIST", new HashSet<>());
+        for (String s : set) {
+            renderSchedule(s);
+        }
     }
 }
