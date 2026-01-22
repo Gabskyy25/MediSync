@@ -154,9 +154,10 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
 
     private void enableSwipeToDelete(RecyclerView recycler) {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override public boolean onMove(@NonNull RecyclerView r,
-                                            @NonNull RecyclerView.ViewHolder v,
-                                            @NonNull RecyclerView.ViewHolder t) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView r,
+                                  @NonNull RecyclerView.ViewHolder v,
+                                  @NonNull RecyclerView.ViewHolder t) {
                 return false;
             }
 

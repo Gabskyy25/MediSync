@@ -52,7 +52,6 @@ public class MainMenu extends AppCompatActivity {
         notif.setOnClickListener(v ->
                 startActivity(new Intent(this, notification.class))
         );
-
     }
 
     private void showAddIssueDialog() {
@@ -97,11 +96,15 @@ public class MainMenu extends AppCompatActivity {
     }
 
     private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right
+                )
                 .replace(R.id.frame_layout, fragment)
                 .commit();
     }
 }
-
-
-
