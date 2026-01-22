@@ -30,7 +30,7 @@
                     android:id="@+id/backbtn"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@drawable/leftchevron"
+                    android:src="@drawable/backbtn"
                     android:tint="#ffffff"/>
 
                 <TextView
@@ -99,7 +99,6 @@
             android:background="#7FE1C3"
             android:scrollbars="vertical"/>
 
-        <!-- BOTTOM NAV -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/botnav"
             android:layout_width="match_parent"

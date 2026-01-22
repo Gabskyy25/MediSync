@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="#f3e4bd"
+        android:backgroundTint="#7fe1c3"
         app:cardElevation="12dp"
         app:cardCornerRadius="22dp">
 
@@ -100,7 +100,7 @@
                 android:id="@+id/btnSetAlarm"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="#63703d"
+                android:backgroundTint="#4faf93"
                 android:fontFamily="@font/fredoka"
                 android:text="Set Alarm"
                 android:textColor="#fcf9f2"
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:text="Your Alarms"
         android:textSize="20sp"
-        android:textColor="#fcf9f2"
+        android:textColor="#000000"
         android:fontFamily="@font/concertone"
         android:textStyle="bold"
         android:layout_marginHorizontal="16dp"

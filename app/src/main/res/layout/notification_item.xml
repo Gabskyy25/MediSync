@@ -30,7 +30,7 @@
                 android:text="Notification Title"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#603620" />
+                android:textColor="#44977F" />
 
             <TextView
                 android:id="@+id/notifMessage"
