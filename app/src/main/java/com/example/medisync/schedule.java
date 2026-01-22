@@ -95,21 +95,21 @@ public class schedule extends AppCompatActivity {
 
 
         TextView scheduleText = scheduleItem.findViewById(R.id.scheduleText);
-        Button deleteBtn = scheduleItem.findViewById(R.id.deleteBtn);
-        Button alarmBtn = scheduleItem.findViewById(R.id.alarmBtn);
+        /*Button deleteBtn = scheduleItem.findViewById(R.id.deleteBtn);
+        Button alarmBtn = scheduleItem.findViewById(R.id.alarmBtn);*/
 
 
         scheduleText.setText("For: " + title + "\nOn: " + scheduleDate + "\nAdded at: " + createdAt);
 
 
-        deleteBtn.setOnClickListener(v -> scheduleContainer.removeView(scheduleItem));
+        /*deleteBtn.setOnClickListener(v -> scheduleContainer.removeView(scheduleItem));
 
 
         alarmBtn.setOnClickListener(v -> {
 
             Intent intent = new Intent(schedule.this, alarm.class);
             startActivity(intent);
-        });
+        });*/
 
 
 

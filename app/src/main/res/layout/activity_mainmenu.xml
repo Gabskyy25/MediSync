@@ -32,6 +32,12 @@
             android:textSize="30sp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/notificationBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="210dp"
+            android:src="@drawable/baseline_circle_notifications_24" /> <!-- Make sure you have a suitable icon -->
 
 
 

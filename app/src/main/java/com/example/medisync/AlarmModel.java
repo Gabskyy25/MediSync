@@ -3,6 +3,11 @@ package com.example.medisync;
 import java.util.List;
 
 public class AlarmModel {
+    public int hour;
+
+    public int minute;
+
+    public String id;
     public String description;
     public String time;
     public boolean enabled;
