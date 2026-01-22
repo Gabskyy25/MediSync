@@ -41,7 +41,7 @@
                 android:fontFamily="@font/fredoka"
                 android:textColor="#2f6f5d"
                 android:padding="15dp"
-                android:background="@drawable/edittext_background"
+                android:background="@drawable/border_bg1"
                 android:textSize="17sp" />
 
             <EditText
@@ -53,7 +53,7 @@
                 android:fontFamily="@font/fredoka"
                 android:textColor="#2f6f5d"
                 android:padding="15dp"
-                android:background="@drawable/edittext_background"
+                android:background="@drawable/border_bg1"
                 android:textSize="17sp"
                 android:layout_marginTop="10dp" />
 
@@ -67,7 +67,7 @@
                 android:fontFamily="@font/fredoka"
                 android:textColor="#2f6f5d"
                 android:padding="15dp"
-                android:background="@drawable/edittext_background"
+                android:background="@drawable/border_bg1"
                 android:textSize="17sp"
                 android:layout_marginTop="10dp" />
 
@@ -79,7 +79,7 @@
                 android:fontFamily="@font/fredoka"
                 android:textColor="#2f6f5d"
                 android:padding="15dp"
-                android:background="@drawable/edittext_background"
+                android:background="@drawable/border_bg1"
                 android:textSize="17sp"
                 android:layout_marginTop="10dp" />
 
@@ -89,17 +89,6 @@
                 android:layout_height="50dp"
                 android:text="Save Patient"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="#7fe1c3"
-                android:textColor="#ffffff"
-                android:fontFamily="@font/fredoka"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/deletePatientBtn"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Delete All"
-                android:layout_marginTop="10dp"
                 android:backgroundTint="#7fe1c3"
                 android:textColor="#ffffff"
                 android:fontFamily="@font/fredoka"

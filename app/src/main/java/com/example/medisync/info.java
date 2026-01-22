@@ -1,18 +1,25 @@
 package com.example.medisync;
 
 import android.app.DatePickerDialog;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 import java.util.Calendar;
 import java.util.List;
@@ -38,7 +45,6 @@ public class info extends Fragment {
         birthdate = v.findViewById(R.id.patientBirthdate);
         disease = v.findViewById(R.id.patientDisease);
         saveBtn = v.findViewById(R.id.saveBtn);
-        deleteBtn = v.findViewById(R.id.deletePatientBtn);
         recycler = v.findViewById(R.id.patientRecycler);
 
         db = new DatabaseHelper(getContext());
@@ -48,6 +54,8 @@ public class info extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
 
+        enableSwipeToDelete();
+
         birthdate.setOnClickListener(vw -> showDatePicker());
 
         saveBtn.setOnClickListener(view -> {
@@ -56,12 +64,40 @@ public class info extends Fragment {
             refreshList();
         });
 
-        deleteBtn.setOnClickListener(view -> {
-            db.deleteAllPatients();
-            refreshList();
-        });
-
         return v;
+    }
+
+    private void enableSwipeToDelete() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getBindingAdapterPosition();
+                Patient patientToDelete = list.get(position);
+
+                db.deletePatient(patientToDelete.getId());
+
+                list.remove(position);
+                adapter.notifyItemRemoved(position);
+
+                Toast.makeText(getContext(), "Patient Deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(Color.parseColor("#FF5252"))
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        .create()
+                        .decorate();
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        }).attachToRecyclerView(recycler);
     }
 
     private void showDatePicker() {

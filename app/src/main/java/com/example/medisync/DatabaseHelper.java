@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.medisync.Patient;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +78,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return patients;
+    }
+
+    public void deletePatient(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_PATIENTS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
     }
 
     public void deleteAllPatients() {
