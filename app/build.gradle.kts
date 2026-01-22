@@ -45,6 +45,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
 
+    implementation("com.github.xabaras:RecyclerViewSwipeDecorator:1.4")
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
 }

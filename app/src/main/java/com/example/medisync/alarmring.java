@@ -7,7 +7,9 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.speech.tts.TextToSpeech;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 
@@ -23,28 +25,38 @@ public class alarmring extends AppCompatActivity {
         super.onCreate(b);
         setContentView(R.layout.activity_alarmring);
 
+        String originalText = getIntent().getStringExtra("DESC");
+        if (originalText == null || originalText.isEmpty()) originalText = "Alarm";
+
         getWindow().addFlags(
-                android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        android.view.WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                        android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
         );
 
         String text = getIntent().getStringExtra("DESC");
         if (text == null || text.isEmpty()) text = "Alarm";
 
+        TextView tvDesc = findViewById(R.id.tvAlarmDesc);
+        if (tvDesc != null) tvDesc.setText(text);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            vibrator = ((VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE)).getDefaultVibrator();
+            VibratorManager vm = (VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE);
+            vibrator = vm.getDefaultVibrator();
         } else {
             vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
 
         startVibration();
 
-        String finalText = text;
+        final String textToSpeak = originalText;
+
+
+
         tts = new TextToSpeech(this, s -> {
             if (s == TextToSpeech.SUCCESS) {
                 tts.setLanguage(Locale.US);
-                speak(finalText);
+                speak(textToSpeak);
             }
         });
 
@@ -53,12 +65,13 @@ public class alarmring extends AppCompatActivity {
     }
 
     private void speak(String t) {
-        if (!active) return;
+        if (!active || tts == null) return;
         tts.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ALARM");
-        handler.postDelayed(() -> speak(t), 2500);
+        handler.postDelayed(() -> speak(t), 3000);
     }
 
     private void startVibration() {
+        if (vibrator == null) return;
         long[] pattern = {0, 800, 400, 800, 400};
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0));
@@ -80,7 +93,13 @@ public class alarmring extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        active = false;
+        handler.removeCallbacksAndMessages(null);
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
         if (vibrator != null) vibrator.cancel();
+        super.onDestroy();
     }
 }
