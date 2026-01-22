@@ -112,6 +112,8 @@ public class schedule extends AppCompatActivity {
         });
 
 
+
+
         scheduleContainer.addView(scheduleItem);
     }
 }

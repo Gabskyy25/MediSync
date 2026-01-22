@@ -1,6 +1,7 @@
 package com.example.medisync;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,12 @@ public class MainMenu extends AppCompatActivity {
 
         ImageView addButton = findViewById(R.id.addissuebtn);
         addButton.setOnClickListener(v -> showAddIssueDialog());
+
+        ImageView notif = findViewById(R.id.notificationBtn);
+        notif.setOnClickListener(v ->
+                startActivity(new Intent(this, notification.class))
+        );
+
     }
 
     private void showAddIssueDialog() {
@@ -95,3 +102,6 @@ public class MainMenu extends AppCompatActivity {
                 .commit();
     }
 }
+
+
+

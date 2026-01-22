@@ -8,110 +8,148 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
-public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
+public class alarm extends AppCompatActivity {
 
-    private List<AlarmModel> list;
+    private TimePicker timePicker;
+    private Button btnSetAlarm;
+    private EditText etAlarmDescription;
+    private RecyclerView recyclerAlarms;
+    private List<AlarmModel> alarmList = new ArrayList<>();
     private AlarmAdapter adapter;
-    private SharedPreferences prefs;
+    SharedPreferences prefs;
+    private static final String PREFS_NAME = "ALARMS";
 
     @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-        prefs = getSharedPreferences("ALARMS", MODE_PRIVATE);
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        TimePicker picker = findViewById(R.id.timePicker);
-        EditText desc = findViewById(R.id.etAlarmDescription);
-        Button add = findViewById(R.id.btnSetAlarm);
-        RecyclerView rv = findViewById(R.id.recyclerAlarms);
+        timePicker = findViewById(R.id.timePicker);
+        btnSetAlarm = findViewById(R.id.btnSetAlarm);
+        etAlarmDescription = findViewById(R.id.etAlarmDescription);
+        recyclerAlarms = findViewById(R.id.recyclerAlarms);
 
-        list = AlarmStorage.load(prefs);
+        loadAlarms();
 
-        adapter = new AlarmAdapter(list, this);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(adapter);
+        adapter = new AlarmAdapter(alarmList);
+        recyclerAlarms.setLayoutManager(new LinearLayoutManager(this));
+        recyclerAlarms.setAdapter(adapter);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override public boolean onMove(RecyclerView r, RecyclerView.ViewHolder v, RecyclerView.ViewHolder t) { return false; }
-            @Override public void onSwiped(RecyclerView.ViewHolder v, int d) {
-                AlarmModel m = list.remove(v.getAdapterPosition());
-                cancelAll(m);
-                AlarmStorage.save(prefs, list);
-                adapter.notifyDataSetChanged();
-            }
-        }).attachToRecyclerView(rv);
+        enableSwipeToDelete();
 
-        add.setOnClickListener(v -> {
-            AlarmModel m = new AlarmModel(
-                    UUID.randomUUID().toString(),
-                    desc.getText().toString().isEmpty() ? "Alarm" : desc.getText().toString(),
-                    picker.getHour(),
-                    picker.getMinute(),
-                    true,
-                    new ArrayList<>()
-            );
-            list.add(m);
-            AlarmStorage.save(prefs, list);
-            adapter.notifyDataSetChanged();
-        });
+        btnSetAlarm.setOnClickListener(v -> setAlarm());
     }
 
-    private void scheduleDay(AlarmModel m, int day) {
+    private void setAlarm() {
+        List<Integer> selectedDays = new ArrayList<>();
+        selectedDays.add(Calendar.MONDAY);
+
+        String description = etAlarmDescription.getText().toString().trim();
+        if (description.isEmpty()) description = "Alarm";
+
+        int hour = timePicker.getHour();
+        int minute = timePicker.getMinute();
+
+        String time = String.format("%02d:%02d", hour, minute);
+
+        alarmList.add(new AlarmModel(description, time, true, selectedDays));
+        saveAlarms();
+        adapter.notifyDataSetChanged();
+
+        scheduleAlarm(description, hour, minute);
+
+        Toast.makeText(this, "Alarm Added!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void scheduleAlarm(String desc, int hour, int minute) {
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.DAY_OF_WEEK, day);
-        c.set(Calendar.HOUR_OF_DAY, m.hour);
-        c.set(Calendar.MINUTE, m.minute);
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, 0);
-        if (c.before(Calendar.getInstance())) c.add(Calendar.WEEK_OF_YEAR, 1);
 
-        Intent i = new Intent(this, alarmreceiver.class);
-        i.putExtra("DESC", m.description);
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DAY_OF_YEAR, 1);
+        }
 
-        PendingIntent pi = PendingIntent.getBroadcast(
-                this,
-                (m.id + day).hashCode(),
-                i,
+        Intent intent = new Intent(this, alarmreceiver.class);
+        intent.putExtra("ALARM_DESCRIPTION", desc);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, (int) System.currentTimeMillis(), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        ((AlarmManager) getSystemService(ALARM_SERVICE))
-                .setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 
-    private void cancelAll(AlarmModel m) {
-        for (int d = 1; d <= 7; d++) {
-            Intent i = new Intent(this, alarmreceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(
-                    this,
-                    (m.id + d).hashCode(),
-                    i,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-            ((AlarmManager) getSystemService(ALARM_SERVICE)).cancel(pi);
+    private void enableSwipeToDelete() {
+        ItemTouchHelper helper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        alarmList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                        saveAlarms();
+                    }
+                });
+
+        helper.attachToRecyclerView(recyclerAlarms);
+    }
+
+    private void saveAlarms() {
+        Set<String> set = new HashSet<>();
+        for (AlarmModel model : alarmList) {
+            set.add(model.description + "|" + model.time + "|" + model.enabled + "|" + model.days.toString());
         }
+        prefs.edit().putStringSet("ALARM_LIST", set).apply();
     }
 
-    @Override
-    public void onToggle(AlarmModel m) {
-        cancelAll(m);
-        if (m.enabled) for (int d : m.days) scheduleDay(m, d);
-        AlarmStorage.save(prefs, list);
-    }
+    private void loadAlarms() {
+        Set<String> set = prefs.getStringSet("ALARM_LIST", new HashSet<>());
+        alarmList.clear();
 
-    @Override
-    public void onDaysChanged(AlarmModel m) {
-        cancelAll(m);
-        if (m.enabled) for (int d : m.days) scheduleDay(m, d);
-        AlarmStorage.save(prefs, list);
+        for (String s : set) {
+            String[] p = s.split("\\|");
+
+            String desc = p[0];
+            String time = p[1];
+            boolean enabled = Boolean.parseBoolean(p[2]);
+
+            List<Integer> days = new ArrayList<>();
+
+            if (p.length >= 4) {
+                String dayStr = p[3].replace("[", "").replace("]", "");
+                if (!dayStr.isEmpty()) {
+                    for (String d : dayStr.split(",")) {
+                        days.add(Integer.parseInt(d.trim()));
+                    }
+                }
+            }
+
+            alarmList.add(new AlarmModel(desc, time, enabled, days));
+        }
     }
 }
