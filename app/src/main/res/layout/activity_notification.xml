@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#f3e4bd"
+    android:background="#e9fbf4"
     tools:context=".notification">
 
 
@@ -31,7 +31,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/backbtn"
-                android:tint="#603620"
+                android:tint="#39825E"
                 tools:ignore="UseAppTint" />
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="Notifications"
                 android:textSize="28sp"
-                android:textColor="#603620"
+                android:textColor="#39825E"
                 android:fontFamily="@font/concertone"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>

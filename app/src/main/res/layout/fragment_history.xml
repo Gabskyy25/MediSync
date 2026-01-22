@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
-    android:background="#63703d">
+    android:background="#e9fbf4">
 
     <TextView
         android:id="@+id/historyTitle"
@@ -15,12 +15,14 @@
         android:textStyle="bold"
         android:paddingBottom="10dp"
         android:fontFamily="@font/concertone"
-        android:textColor="@color/white" />
+        android:textColor="@color/black" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistory"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/border_bg"
         android:scrollbars="vertical" />
 
 </LinearLayout>

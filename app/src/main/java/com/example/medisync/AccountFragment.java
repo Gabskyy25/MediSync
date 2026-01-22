@@ -42,8 +42,7 @@ public class AccountFragment extends Fragment {
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("profile");
 
         nameText = view.findViewById(R.id.Name);
-        emailText = view.findViewById(R.id.gmail);
-        phoneText = view.findViewById(R.id.PhoneNo);
+
 
 
         logOutBtn = view.findViewById(R.id.button);

@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#fcf9f2">
+    android:background="#e9fbf4">
 
+    <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#63703d"
+        android:background="#4faf93"
         android:padding="16dp"
         android:gravity="center">
 
@@ -17,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="Patient Info"
             android:textSize="28sp"
-            android:textColor="#fcf9f2"
+            android:textColor="#ffffff"
             android:fontFamily="@font/concertone" />
     </LinearLayout>
 
@@ -38,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Patient Name"
                 android:fontFamily="@font/fredoka"
-                android:textColor="#231f20"
+                android:textColor="#2f6f5d"
                 android:padding="15dp"
                 android:background="@drawable/edittext_background"
                 android:textSize="17sp" />
@@ -50,7 +51,7 @@
                 android:hint="Age"
                 android:inputType="number"
                 android:fontFamily="@font/fredoka"
-                android:textColor="#231f20"
+                android:textColor="#2f6f5d"
                 android:padding="15dp"
                 android:background="@drawable/edittext_background"
                 android:textSize="17sp"
@@ -64,7 +65,7 @@
                 android:focusable="false"
                 android:clickable="true"
                 android:fontFamily="@font/fredoka"
-                android:textColor="#231f20"
+                android:textColor="#2f6f5d"
                 android:padding="15dp"
                 android:background="@drawable/edittext_background"
                 android:textSize="17sp"
@@ -76,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Diseases"
                 android:fontFamily="@font/fredoka"
-                android:textColor="#231f20"
+                android:textColor="#2f6f5d"
                 android:padding="15dp"
                 android:background="@drawable/edittext_background"
                 android:textSize="17sp"
@@ -88,8 +89,8 @@
                 android:layout_height="50dp"
                 android:text="Save Patient"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="#63703d"
-                android:textColor="#fcf9f2"
+                android:backgroundTint="#7fe1c3"
+                android:textColor="#ffffff"
                 android:fontFamily="@font/fredoka"
                 android:textStyle="bold" />
 
@@ -99,8 +100,8 @@
                 android:layout_height="50dp"
                 android:text="Delete All"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="#603620"
-                android:textColor="#fcf9f2"
+                android:backgroundTint="#7fe1c3"
+                android:textColor="#ffffff"
                 android:fontFamily="@font/fredoka"
                 android:textStyle="bold" />
 
@@ -109,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:text="Saved Patients"
                 android:fontFamily="@font/concertone"
-                android:textColor="#231f20"
+                android:textColor="#2f6f5d"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="25dp" />

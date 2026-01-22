@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f3e4bd"
+        android:background="#ACF4DD"
         android:orientation="vertical"
         android:padding="18dp">
 
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Call Now"
-            android:backgroundTint="#63703d"
+            android:backgroundTint="#4faf93"
             android:textColor="#ffffff"
             android:layout_marginTop="14dp"
             android:padding="8dp"/>
