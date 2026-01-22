@@ -45,15 +45,11 @@ public class AccountFragment extends Fragment {
         emailText = view.findViewById(R.id.gmail);
         phoneText = view.findViewById(R.id.PhoneNo);
 
-        deleteBtn = view.findViewById(R.id.deleteBtn);
+
         logOutBtn = view.findViewById(R.id.button);
 
         loadUserInfo();
 
-        deleteBtn.setOnClickListener(v -> {
-            FirebaseDatabase.getInstance().getReference("Users").child(uid).removeValue();
-            FirebaseAuth.getInstance().getCurrentUser().delete();
-        });
 
         logOutBtn.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
