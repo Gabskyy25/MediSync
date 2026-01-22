@@ -89,7 +89,7 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
         Intent intent = new Intent(this, alarmreceiver.class);
         intent.putExtra("ALARM_DESCRIPTION", alarmModel.description);
 
-        // Splitting time HH:mm
+      
         String[] timeParts = alarmModel.time.split(":");
         int hour = Integer.parseInt(timeParts[0]);
         int minute = Integer.parseInt(timeParts[1]);
