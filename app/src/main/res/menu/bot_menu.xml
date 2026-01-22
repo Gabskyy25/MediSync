@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/allcontacts"
+        android:title="All Contacts"
+        android:iconTint="@color/black"
+        android:icon="@drawable/phone"/>
+    <item
+        android:id="@+id/favorite"
+        android:iconTint="@color/black"
+        android:title="Favorite"
+        android:icon="@drawable/favorite"/>
+    <item
+        android:id="@+id/chistory"
+        android:iconTint="@color/black"
+        android:title="Call History"
+        android:icon="@drawable/call"/>
+</menu>

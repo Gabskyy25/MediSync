@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E9FBF4"
     android:gravity="center">
 
     <LinearLayout
@@ -58,6 +59,7 @@
             android:layout_marginBottom="6dp"
             android:fontFamily="@font/fredoka"
             android:text="Relationship"
+            android:textSize="16sp"
             android:textColor="#231f20"
             android:textStyle="bold" />
 
@@ -72,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fredoka"
+                android:textSize="16sp"
                 android:text="Son" />
 
             <RadioButton
@@ -79,6 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fredoka"
+                android:textSize="16sp"
                 android:text="Daughter" />
 
             <RadioButton
@@ -86,6 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fredoka"
+                android:textSize="16sp"
                 android:text="Wife" />
 
             <RadioButton
@@ -93,6 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fredoka"
+                android:textSize="16sp"
                 android:text="Husband" />
         </RadioGroup>
 
@@ -101,7 +107,7 @@
             android:layout_width="158dp"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
-            android:background="#603620"
+            android:backgroundTint="#4FAF93"
             android:fontFamily="@font/fredoka"
             android:text="Save"
             android:textColor="@color/white"
