@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f3e4bd">
+    android:background="#7FE1C3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:background="#4FAF93"
                 android:padding="20dp"
                 android:gravity="center">
 
@@ -37,7 +38,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/concertone"
                     android:text="Sign Up"
-                    android:textColor="#b56b37"
+                    android:textColor="@color/white"
                     android:textSize="26sp" />
 
                 <TextView
@@ -103,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="22dp"
-                    android:backgroundTint="#63703d"
+                    android:backgroundTint="#3a8c74"
                     android:fontFamily="@font/fredoka"
                     android:text="Sign Up"
                     android:textColor="#FFFFFF" />

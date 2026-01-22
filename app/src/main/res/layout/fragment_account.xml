@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fcf9f2">
+    android:background="#7FE1C3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +16,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:background="@drawable/circleagain">
+            android:background="@drawable/rectangle_shape"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:drawableStart="@drawable/outline_arrow_back_ios_24"/>
 
             <ImageView
                 android:id="@+id/account"
@@ -24,147 +31,171 @@
                 android:layout_height="90dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/baseline_account_circle_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/account"
+                android:layout_alignRight="@id/account"
+                android:layout_marginRight="-5dp"
+                android:layout_marginTop="-10dp"
+                android:textColor="@color/white"
+                android:text="Caregiver"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/Name"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/rectangle_shape"
+            android:padding="15dp"
             android:layout_marginTop="15dp"
-            android:textColor="#231f20"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="15dp">
 
-        <TextView
-            android:id="@+id/security"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Account Security"
-            android:fontFamily="@font/concertone"
-            android:textColor="#231f20"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#b56b37" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="18dp">
 
             <TextView
-                android:id="@+id/email"
+                android:id="@+id/Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Linked Email"
-                android:fontFamily="@font/fredoka"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
                 android:textColor="#231f20"
-                android:textSize="18sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/gmail"
+                android:id="@+id/security"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account Security"
+                android:fontFamily="@font/concertone"
+                android:textColor="#231f20"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/Email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:textColor="#92a0ad"
-                android:textSize="17sp" />
+                android:layout_below="@id/security"
+                android:paddingTop="10dp"
+                android:text="Linked Email"
+                android:textSize="18sp"
+                android:textColor="#231f20"/>
 
             <TextView
                 android:id="@+id/gmail1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:textColor="#92a0ad"
+                android:layout_width="400dp"
+                android:layout_height="65dp"
+                android:layout_alignEnd="@id/Email"
+                android:layout_marginEnd="-285dp"
+                android:paddingLeft="123dp"
+                android:paddingTop="42dp"
                 android:text="jangabrieldeguzman2531@gmail.com"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#b56b37" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="18dp">
+                android:textColor="@color/white"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Linked Phone"
-                android:fontFamily="@font/fredoka"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="10dp"
+                android:textSize="18sp"
                 android:textColor="#231f20"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/PhoneNo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:textColor="#92a0ad"
-                android:textSize="17sp" />
+                android:text="Linked Phone"
+                android:layout_below="@id/Email"/>
 
             <TextView
                 android:id="@+id/phone1"
-                android:layout_width="wrap_content"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:textColor="#92a0ad"
+                android:layout_below="@id/gmail1"
+                android:layout_alignRight="@id/phone"
+                android:paddingTop="12dp"
+                android:paddingLeft="50dp"
                 android:text="09650767631"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#b56b37" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="18dp">
+                android:textColor="@color/white"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/Password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Password"
-                android:fontFamily="@font/fredoka"
+                android:layout_below="@id/phone"
+                android:paddingTop="10dp"
                 android:textColor="#231f20"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <TextView
-                android:id="@+id/Pass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
+                android:id="@+id/pass"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="••••••••"
-                android:textColor="#92a0ad"
-                android:textSize="17sp" />
-        </LinearLayout>
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:layout_below="@id/phone1"
+                android:layout_alignRight="@id/Password"
+                android:paddingLeft="300dp"
+                android:paddingTop="15dp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#b56b37" />
+            <TextView
+                android:id="@+id/method"
+                android:layout_width="wrap_content"
+                android:layout_height="60sp"
+                android:text="Another Log In method to ensure the security of your account"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/fredoka"
+                android:paddingTop="15dp"
+                android:layout_below="@id/Password"/>
+
+            <TextView
+                android:id="@+id/facebook"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Facebook"
+                android:layout_below="@id/method"
+                android:paddingTop="15dp"
+                android:textColor="#231f20"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/LinkFacebook"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Link In"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_below="@id/method"
+                android:paddingLeft="295dp"
+                android:paddingTop="13dp"/>
+
+            <TextView
+                android:id="@+id/google"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Google"
+                android:textColor="#231f20"
+                android:textSize="18sp"
+                android:layout_below="@id/facebook"
+                android:paddingTop="10dp"/>
+
+            <TextView
+                android:id="@+id/LinkGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Link In"
+                android:textStyle="bold"
+                android:layout_below="@id/LinkFacebook"
+                android:paddingTop="13dp"
+                android:paddingLeft="295dp"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
 
 
         <Button
@@ -173,12 +204,21 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:backgroundTint="#b56b37"
+            android:backgroundTint="#3a8c74"
             android:text="Log Out"
             android:fontFamily="@font/fredoka"
             android:textColor="#fcf9f2"
             android:textSize="17sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/deleteAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Account"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"/>
+
 
     </LinearLayout>
 
