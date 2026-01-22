@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/schedule_item_bg"
-    android:padding="16dp"
-    android:layout_margin="8dp"
-    android:elevation="4dp">
-
-    <TextView
-        android:id="@+id/scheduleText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Schedule Info"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="10dp" />
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#fcf9f2">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/scheduleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ToDo: Work\nOn: Oct 25, 2023 08:00 AM"
+            android:textColor="#231f20"
+            android:textSize="16sp"
+            android:fontFamily="@font/fredoka"
+            android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
