@@ -53,6 +53,9 @@
         android:textColor="#fcf9f2"
         android:backgroundTint="#3a8c73" />
 
+
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,6 +65,14 @@
         android:textColor="#231f20"
         android:layout_marginTop="25dp"
         android:layout_marginStart="16dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Swipe right to delete."
+        android:layout_marginTop="10dp"
+        android:textColor="#a0a3a1"
+        android:layout_gravity="center"
+        android:textSize="15dp"/>
 
     <LinearLayout
         android:id="@+id/scheduleContainer"

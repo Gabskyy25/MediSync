@@ -92,6 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:timePickerMode="spinner"
+                    android:background="#d5ebed"
                     android:padding="10dp"
                     android:layout_gravity="center" />
             </androidx.cardview.widget.CardView>
@@ -110,6 +111,13 @@
 
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Swipe right to delete."
+        android:textSize="15dp"
+        android:layout_gravity="center"
+        android:textColor="#a0a3a1"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

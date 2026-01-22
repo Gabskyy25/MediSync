@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4FAF93">
+    android:background="#e9fbf4">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_margin="16dp"
-            android:background="@drawable/edittext_background1"
+            android:background="@drawable/border_bg"
             android:hint="Search contact"
             android:textSize="14sp"
             android:paddingStart="16dp"
@@ -85,18 +85,17 @@
                 android:layout_height="wrap_content"
                 android:text="Sort by"
                 android:textSize="14sp"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 
-        <!-- LIST -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewContacts"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="12dp"
-            android:background="#7FE1C3"
+            android:background="#e9fbf4"
             android:scrollbars="vertical"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
