@@ -12,23 +12,27 @@ import java.util.List;
 
 public class historyadapter extends RecyclerView.Adapter<historyadapter.HistoryViewHolder> {
 
-    private List<historyitem> historyList;
+    private List<HistoryItem> historyList;
 
-    public historyadapter(List<historyitem> historyList) {
+    public historyadapter(List<HistoryItem> historyList) {
         this.historyList = historyList;
     }
 
     @NonNull
     @Override
     public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.itemhistory, parent, false);
+
         return new HistoryViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
-        historyitem item = historyList.get(position);
+
+        HistoryItem item = historyList.get(position);
+
         holder.tvIssue.setText("Issue: " + item.getIssue());
         holder.tvResolve.setText("Resolve: " + item.getResolve());
         holder.tvLevel.setText("Emergency: " + item.getLevel());
@@ -36,14 +40,25 @@ public class historyadapter extends RecyclerView.Adapter<historyadapter.HistoryV
 
     @Override
     public int getItemCount() {
-        return historyList.size();
+        return historyList == null ? 0 : historyList.size();
     }
 
-    public static class HistoryViewHolder extends RecyclerView.ViewHolder {
+    /* ================= UPDATE DATA ================= */
+
+    public void updateHistory(List<HistoryItem> newList) {
+        this.historyList = newList;
+        notifyDataSetChanged();
+    }
+
+    /* ================= VIEW HOLDER ================= */
+
+    static class HistoryViewHolder extends RecyclerView.ViewHolder {
+
         TextView tvIssue, tvResolve, tvLevel;
 
-        public HistoryViewHolder(@NonNull View itemView) {
+        HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
+
             tvIssue = itemView.findViewById(R.id.tvIssue);
             tvResolve = itemView.findViewById(R.id.tvResolve);
             tvLevel = itemView.findViewById(R.id.tvLevel);

@@ -44,14 +44,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
     public void onBindViewHolder(@NonNull Holder h, int position) {
         AlarmModel m = list.get(position);
 
-        h.desc.setText(m.description);
-        h.time.setText(formatTo12Hour(m.time));
-        h.days.setText(formatDays(m.days));
-        h.toggle.setChecked(m.enabled);
+        h.desc.setText(m.getDescription());
+        h.time.setText(formatTo12Hour(m.getTime()));
+        h.days.setText(formatDays(m.getDays()));
+        h.toggle.setChecked(m.isEnabled());
 
         h.toggle.setOnCheckedChangeListener(null);
         h.toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            m.enabled = isChecked;
+            m.setEnabled(isChecked);
             listener.onToggle(m);
         });
 
@@ -66,7 +66,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
     private void showDayPicker(Holder h, AlarmModel m) {
         boolean[] checked = new boolean[7];
 
-        for (int d : m.days) {
+        for (int d : m.getDays()) {
             if (d >= 1 && d <= 7) {
                 checked[d - 1] = true;
             }
@@ -77,13 +77,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.Holder> {
                 .setMultiChoiceItems(dayNames, checked,
                         (dialog, which, isChecked) -> checked[which] = isChecked)
                 .setPositiveButton("Save", (dialog, which) -> {
-                    m.days.clear();
+                    m.getDays().clear();
                     for (int i = 0; i < 7; i++) {
                         if (checked[i]) {
-                            m.days.add(i + 1);
+                            m.getDays().add(i + 1);
                         }
                     }
-                    h.days.setText(formatDays(m.days));
+                    h.days.setText(formatDays(m.getDays()));
                     listener.onDaysChanged(m);
                 })
                 .setNegativeButton("Cancel", null)

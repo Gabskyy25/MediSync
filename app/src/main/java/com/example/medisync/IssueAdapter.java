@@ -17,22 +17,20 @@ import java.util.List;
 
 public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHolder> {
 
-    private Context context;
-    private List<Issue> issueList;
-    private DBHelper db;
-    private Runnable onUpdated;
-    private NotificationDBHelper notificationDB;
+    private final Context context;
+    private final List<Issue> issueList;
+    private final IssueRepository repository;
+    private final Runnable onUpdated;
 
     public IssueAdapter(Context context,
                         List<Issue> issueList,
-                        DBHelper db,
+                        IssueRepository repository,
                         Runnable onUpdated) {
 
         this.context = context;
         this.issueList = issueList;
-        this.db = db;
+        this.repository = repository;
         this.onUpdated = onUpdated;
-        this.notificationDB = new NotificationDBHelper(context);
     }
 
     @NonNull
@@ -45,13 +43,15 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
 
     @Override
     public void onBindViewHolder(@NonNull IssueViewHolder holder, int position) {
+
         Issue issue = issueList.get(position);
 
         holder.textIssue.setText(issue.getIssue());
         holder.textResolution.setText(issue.getResolution());
         holder.textDate.setText("Saved at: " + issue.getDateAdded());
 
-        // 🗑 DELETE ISSUE
+        /* ================= DELETE ================= */
+
         holder.btnDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("Delete")
@@ -63,25 +63,14 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
 
                         Issue removed = issueList.get(pos);
 
-                        // DELETE FROM DATABASE
-                        db.deleteIssue(removed.getId());
+                        repository.deleteIssue(removed.getId());
 
-                        // REMOVE FROM LIST
                         issueList.remove(pos);
                         notifyItemRemoved(pos);
 
-                        // ✅ TOAST
                         Toast.makeText(context,
                                 "Issue deleted",
                                 Toast.LENGTH_SHORT).show();
-
-                        // ✅ NOTIFICATION (REMOVED)
-                        notificationDB.addNotification(
-                                "Issue Removed",
-                                removed.getIssue() + " was deleted",
-                                "ISSUE",
-                                (int) removed.getId()
-                        );
 
                         onUpdated.run();
                     })
@@ -89,11 +78,14 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
                     .show();
         });
 
-        // ✏️ EDIT ISSUE
-        holder.btnEdit.setOnClickListener(v -> openEditDialog(issue, position));
+        /* ================= EDIT ================= */
+
+        holder.btnEdit.setOnClickListener(v ->
+                openEditDialog(issue, holder.getBindingAdapterPosition()));
     }
 
     private void openEditDialog(Issue issue, int position) {
+
         View dialogView = LayoutInflater.from(context)
                 .inflate(R.layout.dialog_add_issue, null);
 
@@ -118,12 +110,16 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
                         return;
                     }
 
-                    db.updateIssue(issue.getId(), newIssue, newResolution);
+                    repository.updateIssue(
+                            issue.getId(),
+                            newIssue,
+                            newResolution
+                    );
 
                     issue.setIssue(newIssue);
                     issue.setResolution(newResolution);
-
                     notifyItemChanged(position);
+
                     onUpdated.run();
                 })
                 .setNegativeButton("Cancel", null)
@@ -137,12 +133,12 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.IssueViewHol
 
     /* ================= VIEW HOLDER ================= */
 
-    public static class IssueViewHolder extends RecyclerView.ViewHolder {
+    static class IssueViewHolder extends RecyclerView.ViewHolder {
 
         TextView textIssue, textResolution, textDate;
         ImageButton btnEdit, btnDelete;
 
-        public IssueViewHolder(@NonNull View itemView) {
+        IssueViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textIssue = itemView.findViewById(R.id.textIssue);

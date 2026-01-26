@@ -23,11 +23,11 @@ import java.util.Comparator;
 
 public class contactinfo extends AppCompatActivity {
 
-    private ArrayList<Contact> contactList;
-    private ArrayList<Contact> filteredList;
+    private ArrayList<Contact> contactList = new ArrayList<>();
+    private ArrayList<Contact> filteredList = new ArrayList<>();
     private ContactAdapter adapter;
-    private ContactDBHelper dbHelper;
-    private NotificationDBHelper notificationDB; // ✅ ADD
+
+    private ContactRepository contactRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +40,29 @@ public class contactinfo extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        dbHelper = new ContactDBHelper(this);
-        notificationDB = new NotificationDBHelper(this); // ✅ INIT
-
-        contactList = dbHelper.getAllContacts();
-        filteredList = new ArrayList<>(contactList);
+        contactRepo = new ContactRepository();
 
         adapter = new ContactAdapter(filteredList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
         setupRecyclerViewLongPress();
+        loadContacts();
 
         fabAddInfo.setOnClickListener(v -> showAddContactDialog());
+    }
+
+    // 🔥 LOAD FROM FIREBASE
+    private void loadContacts() {
+        contactRepo.getAllContacts(contacts -> {
+            contactList.clear();
+            filteredList.clear();
+
+            contactList.addAll(contacts);
+            filteredList.addAll(contacts);
+
+            adapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -119,17 +129,8 @@ public class contactinfo extends AppCompatActivity {
                         if (i == 0) {
                             showEditContactDialog(contact, position);
                         } else {
-
-                            // ✅ DELETE CONTACT
-                            dbHelper.deleteContact(contact.getId());
-
-                            // ✅ ADD DELETE NOTIFICATION
-                            notificationDB.addNotification(
-                                    "Contact Deleted",
-                                    contact.getName() + " was removed",
-                                    "CONTACT",
-                                    contact.getId()
-                            );
+                            // 🔥 DELETE FROM FIREBASE
+                            contactRepo.deleteContact(String.valueOf(contact.getId()));
 
                             contactList.remove(contact);
                             filteredList.remove(position);
@@ -155,6 +156,7 @@ public class contactinfo extends AppCompatActivity {
             String name = etName.getText().toString();
             String number = etNumber.getText().toString();
             String address = etAddress.getText().toString();
+
             int selectedId = radioGroupRelation.getCheckedRadioButtonId();
             RadioButton rb = dialog.findViewById(selectedId);
             String relation = rb != null ? rb.getText().toString() : "";
@@ -162,16 +164,9 @@ public class contactinfo extends AppCompatActivity {
             if (!name.isEmpty() && !number.isEmpty() && !address.isEmpty() && !relation.isEmpty()) {
 
                 Contact contact = new Contact(name, number, address, relation);
-                long id = dbHelper.addContact(contact);
-                contact.setId((int) id);
 
-                // ✅ ADD NOTIFICATION
-                notificationDB.addNotification(
-                        "New Contact Added",
-                        name + " was added",
-                        "CONTACT",
-                        contact.getId()
-                );
+                // 🔥 SAVE TO FIREBASE
+                contactRepo.addContact(contact);
 
                 contactList.add(contact);
                 filteredList.add(contact);
@@ -213,17 +208,20 @@ public class contactinfo extends AppCompatActivity {
             String name = etName.getText().toString();
             String number = etNumber.getText().toString();
             String address = etAddress.getText().toString();
+
             int selectedId = radioGroupRelation.getCheckedRadioButtonId();
             RadioButton rb = dialog.findViewById(selectedId);
             String relation = rb != null ? rb.getText().toString() : "";
 
             if (!name.isEmpty() && !number.isEmpty() && !address.isEmpty() && !relation.isEmpty()) {
 
-                Contact updated = new Contact(contact.getId(), name, number, address, relation);
-                dbHelper.updateContact(updated);
+                Contact updated = new Contact(name, number, address, relation);
 
-                int originalIndex = contactList.indexOf(contact);
-                contactList.set(originalIndex, updated);
+                // 🔥 FIREBASE UPDATE = delete + add (simple approach)
+                contactRepo.deleteContact(String.valueOf(contact.getId()));
+                contactRepo.addContact(updated);
+
+                contactList.set(contactList.indexOf(contact), updated);
                 filteredList.set(position, updated);
 
                 adapter.notifyItemChanged(position);

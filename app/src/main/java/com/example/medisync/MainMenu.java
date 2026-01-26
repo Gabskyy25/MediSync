@@ -17,15 +17,16 @@ import com.example.medisync.databinding.ActivityMainmenuBinding;
 public class MainMenu extends AppCompatActivity {
 
     private ActivityMainmenuBinding binding;
-    private DBHelper dbHelper;
+    private IssueRepository issueRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityMainmenuBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        dbHelper = DBHelper.getInstance(this);
+        issueRepository = new IssueRepository();
 
         replaceFragment(new HomeFragment());
 
@@ -39,7 +40,7 @@ public class MainMenu extends AppCompatActivity {
                 replaceFragment(new HistoryFragment());
             } else if (id == R.id.account) {
                 replaceFragment(new AccountFragment());
-            } else if (id == R.id.info){
+            } else if (id == R.id.info) {
                 replaceFragment(new info());
             }
             return true;
@@ -54,46 +55,49 @@ public class MainMenu extends AppCompatActivity {
         );
     }
 
+    /* ================= ADD ISSUE ================= */
+
     private void showAddIssueDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_issue, null);
+        View dialogView = LayoutInflater.from(this)
+                .inflate(R.layout.dialog_add_issue, null);
         builder.setView(dialogView);
 
         EditText editIssue = dialogView.findViewById(R.id.editIssue);
         EditText editResolution = dialogView.findViewById(R.id.editResolution);
 
-        builder.setPositiveButton("Save", (dialogInterface, which) -> {
+        builder.setPositiveButton("Save", (dialog, which) -> {
+
             String issueText = editIssue.getText().toString().trim();
             String resolutionText = editResolution.getText().toString().trim();
 
             if (issueText.isEmpty() || resolutionText.isEmpty()) {
-                Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "Fill all fields",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            long now = System.currentTimeMillis();
-            Issue issue = new Issue(issueText, resolutionText, now);
-            long id = dbHelper.addIssue(issue);
+            Issue issue = new Issue(
+                    issueText,
+                    resolutionText,
+                    System.currentTimeMillis()
+            );
 
-            if (id != -1) {
-                Toast.makeText(this, "Issue added", Toast.LENGTH_SHORT).show();
-                refreshHistoryIfVisible();
-            } else {
-                Toast.makeText(this, "Failed to save issue", Toast.LENGTH_SHORT).show();
-            }
+            issueRepository.addIssue(issue);
+
+            Toast.makeText(this,
+                    "Issue added",
+                    Toast.LENGTH_SHORT).show();
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
+        builder.setNegativeButton("Cancel",
+                (dialog, which) -> dialog.dismiss());
+
+        builder.show();
     }
 
-    public void refreshHistoryIfVisible() {
-        Fragment current = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-        if (current instanceof HistoryFragment) {
-            ((HistoryFragment) current).refreshList();
-        }
-    }
+    /* ================= NAV ================= */
 
     private void replaceFragment(Fragment fragment) {
         getSupportFragmentManager()

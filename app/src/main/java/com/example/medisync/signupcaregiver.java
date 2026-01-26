@@ -12,13 +12,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class signupcaregiver extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class signupcaregiver extends AppCompatActivity {
         setContentView(R.layout.activity_signupcaregiver);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Users");
+        db = FirebaseFirestore.getInstance();
 
         EditText emailField = findViewById(R.id.editEmail);
         EditText passField = findViewById(R.id.editPassword);
@@ -69,30 +71,37 @@ public class signupcaregiver extends AppCompatActivity {
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-
-                            String userId = mAuth.getCurrentUser().getUid();
-
-                            User user = new User(email, phone, "Caregiver");
-
-                            mDatabase.child(userId).child("profile").setValue(user)
-                                    .addOnCompleteListener(dbTask -> {
-                                        loading.dismiss();
-                                        if (dbTask.isSuccessful()) {
-                                            Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(this, MainActivity.class));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(this, "Database Error: " +
-                                                    dbTask.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-
-                        } else {
+                        if (!task.isSuccessful()) {
                             loading.dismiss();
-                            Toast.makeText(this, "Signup Failed: " +
-                                    task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(this,
+                                    "Signup Failed: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            return;
                         }
+
+                        String uid = mAuth.getCurrentUser().getUid();
+
+                        Map<String, Object> userData = new HashMap<>();
+                        userData.put("email", email);
+                        userData.put("phone", phone);
+                        userData.put("role", "Caregiver");
+                        userData.put("createdAt", System.currentTimeMillis());
+
+                        db.collection("users")
+                                .document(uid)
+                                .set(userData)
+                                .addOnSuccessListener(unused -> {
+                                    loading.dismiss();
+                                    Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(this, MainActivity.class));
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    loading.dismiss();
+                                    Toast.makeText(this,
+                                            "Firestore Error: " + e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                });
                     });
         });
 
@@ -100,17 +109,5 @@ public class signupcaregiver extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
-    }
-
-    public static class User {
-        public String email, phone, role;
-
-        public User() { }
-
-        public User(String email, String phone, String role) {
-            this.email = email;
-            this.phone = phone;
-            this.role = role;
-        }
     }
 }

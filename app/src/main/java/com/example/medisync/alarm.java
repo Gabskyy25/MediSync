@@ -3,7 +3,6 @@ package com.example.medisync;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Build;
@@ -14,44 +13,40 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
 
     private final List<AlarmModel> alarmList = new ArrayList<>();
     private AlarmAdapter adapter;
-    private SharedPreferences prefs;
-    private static final String PREFS_NAME = "ALARMS";
+
     private TimePicker timePicker;
     private EditText etAlarmDescription;
-    private NotificationDBHelper notificationDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        notificationDB = new NotificationDBHelper(this);
-
         timePicker = findViewById(R.id.timePicker);
         etAlarmDescription = findViewById(R.id.etAlarmDescription);
         Button btnSetAlarm = findViewById(R.id.btnSetAlarm);
         ImageView backBtn = findViewById(R.id.backbtn);
         RecyclerView recyclerAlarms = findViewById(R.id.recyclerAlarms);
-
-        loadAlarms();
 
         adapter = new AlarmAdapter(alarmList, this);
         recyclerAlarms.setLayoutManager(new LinearLayoutManager(this));
@@ -63,92 +58,168 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
         btnSetAlarm.setOnClickListener(v -> setAlarm());
     }
 
-    private void setAlarm() {
-        List<Integer> days = new ArrayList<>();
-        days.add(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+    /* ================= RELOAD WHEN RETURNING ================= */
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAlarmsFromFirestore();
+    }
+
+    /* ================= LOAD ================= */
+
+    private void loadAlarmsFromFirestore() {
+        AlarmStorage.loadAlarms(list -> {
+            alarmList.clear();
+            alarmList.addAll(list);
+            adapter.notifyDataSetChanged();
+
+            for (AlarmModel m : alarmList) {
+                if (m.isEnabled()) {
+                    scheduleAlarm(m);
+                }
+            }
+        });
+    }
+
+    /* ================= ADD ================= */
+
+    private void setAlarm() {
         String desc = etAlarmDescription.getText().toString().trim();
         if (desc.isEmpty()) desc = "Alarm";
 
         int hour = timePicker.getHour();
         int minute = timePicker.getMinute();
+
         String time = String.format(Locale.US, "%02d:%02d", hour, minute);
 
+        List<Integer> days = new ArrayList<>();
+        days.add(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+
         AlarmModel model = new AlarmModel(desc, time, true, days);
+
         alarmList.add(model);
-        saveAlarms();
         adapter.notifyItemInserted(alarmList.size() - 1);
 
         scheduleAlarm(model);
+        AlarmStorage.saveAlarm(model);
 
-        notificationDB.addNotification("Alarm Added", desc + " at " + formatTime12(hour, minute), "alarm", generateAlarmId(model));
         Toast.makeText(this, "Alarm Added!", Toast.LENGTH_SHORT).show();
+        etAlarmDescription.setText("");
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "User NOT logged in", Toast.LENGTH_LONG).show();
+            return;
+        }
+
     }
 
+    /* ================= DELETE ================= */
+
+    private void deleteAlarm(int position) {
+        AlarmModel model = alarmList.get(position);
+
+        cancelAlarm(model);
+        AlarmStorage.deleteAlarm(model.getId());
+
+        alarmList.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        Toast.makeText(this, "Alarm Deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    /* ================= SCHEDULING ================= */
+
     private void scheduleAlarm(AlarmModel model) {
+        cancelAlarm(model); // prevent duplicates
+
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (manager == null) return;
 
-        String[] parts = model.time.split(":");
+        String[] parts = model.getTime().split(":");
         int hour = Integer.parseInt(parts[0]);
         int minute = Integer.parseInt(parts[1]);
 
-        for (int day : model.days) {
+        for (int day : model.getDays()) {
             Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_WEEK, day);
             c.set(Calendar.HOUR_OF_DAY, hour);
             c.set(Calendar.MINUTE, minute);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
 
-            if (c.before(Calendar.getInstance())) c.add(Calendar.DAY_OF_YEAR, 1);
+            if (c.before(Calendar.getInstance())) {
+                c.add(Calendar.WEEK_OF_YEAR, 1);
+            }
 
             Intent intent = new Intent(this, alarmreceiver.class);
-            intent.putExtra("DESC", model.description);
+            intent.putExtra("DESC", model.getDescription());
 
-            PendingIntent pi = PendingIntent.getBroadcast(this, generateAlarmId(model), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pi = PendingIntent.getBroadcast(
+                    this,
+                    model.getId().hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !manager.canScheduleExactAlarms()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                    !manager.canScheduleExactAlarms()) {
                 startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
                 return;
             }
 
-            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+            manager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    c.getTimeInMillis(),
+                    pi
+            );
         }
     }
 
     private void cancelAlarm(AlarmModel model) {
+        if (model.getId() == null) return;
+
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (manager == null) return;
+
         Intent intent = new Intent(this, alarmreceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(this, generateAlarmId(model), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pi = PendingIntent.getBroadcast(
+                this,
+                model.getId().hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
         manager.cancel(pi);
     }
 
+    /* ================= SWIPE ================= */
+
     private void enableSwipeToDelete(RecyclerView recycler) {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
             @Override
-            public boolean onMove(@NonNull RecyclerView r, @NonNull RecyclerView.ViewHolder v, @NonNull RecyclerView.ViewHolder t) {
+            public boolean onMove(@NonNull RecyclerView r,
+                                  @NonNull RecyclerView.ViewHolder v,
+                                  @NonNull RecyclerView.ViewHolder t) {
                 return false;
             }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder vh, int d) {
-                int pos = vh.getBindingAdapterPosition();
-                AlarmModel model = alarmList.get(pos);
-                cancelAlarm(model);
-                notificationDB.deleteByEntity("alarm", generateAlarmId(model));
-                alarmList.remove(pos);
-                adapter.notifyItemRemoved(pos);
-                saveAlarms();
-                Toast.makeText(alarm.this, "Alarm Deleted", Toast.LENGTH_SHORT).show();
+                deleteAlarm(vh.getBindingAdapterPosition());
             }
 
             @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
-                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                                    int actionState, boolean isCurrentlyActive) {
+            public void onChildDraw(@NonNull Canvas c,
+                                    @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder,
+                                    float dX, float dY,
+                                    int actionState,
+                                    boolean isCurrentlyActive) {
 
-                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                new RecyclerViewSwipeDecorator.Builder(
+                        c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                         .addSwipeLeftBackgroundColor(Color.parseColor("#FF5252"))
                         .addSwipeLeftActionIcon(R.drawable.ic_delete)
                         .create()
@@ -159,35 +230,20 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
         }).attachToRecyclerView(recycler);
     }
 
-    private int generateAlarmId(AlarmModel model) { return (model.description + model.time).hashCode(); }
+    /* ================= ADAPTER CALLBACKS ================= */
 
-    private String formatTime12(int h, int m) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, h);
-        c.set(Calendar.MINUTE, m);
-        return android.text.format.DateFormat.format("hh:mm a", c).toString();
+    @Override
+    public void onToggle(AlarmModel m) {
+        if (m.isEnabled()) scheduleAlarm(m);
+        else cancelAlarm(m);
+
+        AlarmStorage.saveAlarm(m);
     }
 
-    private void saveAlarms() {
-        Set<String> set = new HashSet<>();
-        for (AlarmModel m : alarmList) set.add(m.description + "|" + m.time + "|" + m.enabled + "|" + m.days.toString());
-        prefs.edit().putStringSet("ALARM_LIST", set).apply();
+    @Override
+    public void onDaysChanged(AlarmModel m) {
+        cancelAlarm(m);
+        scheduleAlarm(m);
+        AlarmStorage.saveAlarm(m);
     }
-
-    private void loadAlarms() {
-        Set<String> set = prefs.getStringSet("ALARM_LIST", new HashSet<>());
-        alarmList.clear();
-        for (String s : set) {
-            String[] p = s.split("\\|");
-            List<Integer> days = new ArrayList<>();
-            if (p.length >= 4) {
-                String d = p[3].replace("[", "").replace("]", "");
-                if (!d.isEmpty()) for (String x : d.split(",")) days.add(Integer.parseInt(x.trim()));
-            }
-            alarmList.add(new AlarmModel(p[0], p[1], Boolean.parseBoolean(p[2]), days));
-        }
-    }
-
-    @Override public void onToggle(AlarmModel m) { if (m.enabled) scheduleAlarm(m); else cancelAlarm(m); saveAlarms(); }
-    @Override public void onDaysChanged(AlarmModel m) { cancelAlarm(m); scheduleAlarm(m); saveAlarms(); }
 }

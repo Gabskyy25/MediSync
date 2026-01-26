@@ -26,7 +26,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ScheduleModel model = scheduleList.get(position);
-        holder.scheduleText.setText("ToDo: " + model.title + "\nOn: " + model.time);
+        holder.scheduleText.setText("ToDo: " + model.getTitle() + "\nOn: " + model.getTime());
     }
 
     @Override

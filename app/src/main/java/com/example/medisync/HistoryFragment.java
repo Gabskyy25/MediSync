@@ -1,43 +1,75 @@
 package com.example.medisync;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private IssueAdapter adapter;
-    private DBHelper dbHelper;
+    private IssueRepository repository;
 
+    private final ArrayList<Issue> issueList = new ArrayList<>();
+    private ListenerRegistration issueListener; // 🔥 realtime listener
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerHistory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        dbHelper = DBHelper.getInstance(requireContext());
+        repository = new IssueRepository();
 
-        loadData();
+        adapter = new IssueAdapter(
+                requireContext(),
+                issueList,
+                repository,
+                () -> {} // no manual reload needed anymore
+        );
+
+        recyclerView.setAdapter(adapter);
+
         return view;
     }
 
-    private void loadData() {
-        List<Issue> issues = dbHelper.getAllIssues();
-        adapter = new IssueAdapter(getContext(), issues, dbHelper, this::refreshList);
-        recyclerView.setAdapter(adapter);
+    /* ================= REALTIME LISTEN ================= */
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        issueListener = repository.listenToIssues(list -> {
+            issueList.clear();
+            issueList.addAll(list);
+            adapter.notifyDataSetChanged();
+        });
     }
 
-    public void refreshList() {
-        List<Issue> issues = dbHelper.getAllIssues();
-        adapter = new IssueAdapter(getContext(), issues, dbHelper, this::refreshList);
-        recyclerView.setAdapter(adapter);
+    /* ================= CLEANUP ================= */
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (issueListener != null) {
+            issueListener.remove();
+        }
     }
 }

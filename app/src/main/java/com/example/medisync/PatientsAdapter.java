@@ -4,27 +4,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class PatientsAdapter extends RecyclerView.Adapter<PatientsAdapter.PatientViewHolder> {
-    private List<Patient> patients;
+public class PatientsAdapter
+        extends RecyclerView.Adapter<PatientsAdapter.PatientViewHolder> {
+
+    private List<Patient> patients = new ArrayList<>();
 
     public PatientsAdapter(List<Patient> patients) {
-        this.patients = patients;
+        if (patients != null) {
+            this.patients = patients;
+        }
     }
 
     @NonNull
     @Override
-    public PatientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.patient_item, parent, false);
+    public PatientViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent, int viewType) {
+
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.patient_item, parent, false);
         return new PatientViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PatientViewHolder holder, int position) {
+    public void onBindViewHolder(
+            @NonNull PatientViewHolder holder, int position) {
+
         Patient patient = patients.get(position);
+
         holder.name.setText(patient.getName());
         holder.age.setText(String.valueOf(patient.getAge()));
         holder.birthdate.setText(patient.getBirthdate());
@@ -37,15 +50,22 @@ public class PatientsAdapter extends RecyclerView.Adapter<PatientsAdapter.Patien
     }
 
     public void updatePatients(List<Patient> newPatients) {
-        this.patients = newPatients;
+        this.patients.clear();
+        if (newPatients != null) {
+            this.patients.addAll(newPatients);
+        }
         notifyDataSetChanged();
     }
 
-    public static class PatientViewHolder extends RecyclerView.ViewHolder {
+    /* ================= VIEW HOLDER ================= */
+
+    static class PatientViewHolder extends RecyclerView.ViewHolder {
+
         TextView name, age, birthdate, disease;
 
         public PatientViewHolder(@NonNull View itemView) {
             super(itemView);
+
             name = itemView.findViewById(R.id.patientName);
             age = itemView.findViewById(R.id.patientAge);
             birthdate = itemView.findViewById(R.id.patientBirthdate);

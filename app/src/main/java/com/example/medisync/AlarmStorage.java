@@ -1,66 +1,103 @@
 package com.example.medisync;
 
-import android.content.SharedPreferences;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import androidx.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AlarmStorage {
 
-    public static void save(SharedPreferences p, List<AlarmModel> list) {
-        JSONArray arr = new JSONArray();
-        try {
-            for (AlarmModel m : list) {
-                JSONObject o = new JSONObject();
-                o.put("id", m.id);
-                o.put("d", m.description);
-                o.put("h", m.hour);
-                o.put("m", m.minute);
-                o.put("e", m.enabled);
-                // Also save the days list to JSON
-                o.put("days", new JSONArray(m.days));
-                arr.put(o);
-            }
-        } catch (Exception ignored) {}
-        p.edit().putString("data", arr.toString()).apply();
+    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private static String getUid() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return null;
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public static List<AlarmModel> load(SharedPreferences p) {
-        List<AlarmModel> list = new ArrayList<>();
-        try {
-            JSONArray arr = new JSONArray(p.getString("data", "[]"));
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject o = arr.getJSONObject(i);
+    /* ================= SAVE SINGLE ALARM (FIX) ================= */
 
-                // Create the list of days from the JSON array
-                List<Integer> days = new ArrayList<>();
-                if (o.has("days")) {
-                    JSONArray daysArray = o.getJSONArray("days");
-                    for (int j = 0; j < daysArray.length(); j++) {
-                        days.add(daysArray.getInt(j));
-                    }
-                }
+    public static void saveAlarm(@NonNull AlarmModel alarm) {
+        String uid = getUid();
+        if (uid == null || alarm.getId() == null) return;
 
-                // 1. Create the AlarmModel object using the matching constructor
-                AlarmModel model = new AlarmModel(
-                        o.getString("id"),
-                        o.getString("d"),
-                        o.getBoolean("e"),
-                        days
-                );
+        Map<String, Object> data = new HashMap<>();
+        data.put("description", alarm.getDescription());
+        data.put("time", alarm.getTime());
+        data.put("enabled", alarm.isEnabled());
+        data.put("days", alarm.getDays());
 
-                // 2. Set the hour and minute fields after the object is created
-                model.hour = o.getInt("h");
-                model.minute = o.getInt("m");
+        db.collection("users")
+                .document(uid)
+                .collection("alarms")
+                .document(alarm.getId())
+                .set(data);
+    }
 
-                list.add(model);
-            }
-        } catch (Exception ignored) {
-            // It's often better to log the exception for debugging
-            // e.g., android.util.Log.e("AlarmStorage", "Error loading alarms", ignored);
+    /* ================= LOAD ALARMS ================= */
+
+    public static void loadAlarms(@NonNull AlarmLoadCallback callback) {
+        String uid = getUid();
+        if (uid == null) {
+            callback.onLoaded(new ArrayList<>());
+            return;
         }
-        return list;
+
+        db.collection("users")
+                .document(uid)
+                .collection("alarms")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    List<AlarmModel> list = new ArrayList<>();
+
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+
+                        List<Long> daysLong = (List<Long>) doc.get("days");
+                        List<Integer> days = new ArrayList<>();
+
+                        if (daysLong != null) {
+                            for (Long d : daysLong) {
+                                days.add(d.intValue());
+                            }
+                        }
+
+                        AlarmModel model = new AlarmModel(
+                                doc.getString("description"),
+                                doc.getString("time"),
+                                Boolean.TRUE.equals(doc.getBoolean("enabled")),
+                                days
+                        );
+
+                        model.setId(doc.getId());
+                        list.add(model);
+                    }
+
+                    callback.onLoaded(list);
+                });
+    }
+
+
+    /* ================= DELETE ALARM ================= */
+
+    public static void deleteAlarm(String alarmId) {
+        String uid = getUid();
+        if (uid == null) return;
+
+        db.collection("users")
+                .document(uid)
+                .collection("alarms")
+                .document(alarmId)
+                .delete();
+    }
+
+    /* ================= CALLBACK ================= */
+
+    public interface AlarmLoadCallback {
+        void onLoaded(List<AlarmModel> alarms);
     }
 }
