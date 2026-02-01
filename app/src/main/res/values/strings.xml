@@ -2,4 +2,9 @@
     <string name="app_name">App_PatientsAndCaregivers</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">
+    599531561799-n1b4v4etng34sgi3uc4dnv739g0d5o3l.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">909014314977004</string>
+    <string name="fb_login_protocol_scheme">fb909014314977004</string>
+
 </resources>

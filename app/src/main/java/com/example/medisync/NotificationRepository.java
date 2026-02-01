@@ -1,70 +1,102 @@
 package com.example.medisync;
 
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class NotificationRepository {
 
     private final FirebaseFirestore db;
+    private final FirebaseAuth auth;
 
     public NotificationRepository() {
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
     }
 
-    /* ================= ADD NOTIFICATION ================= */
+    private String getUid() {
+        return auth.getCurrentUser() != null
+                ? auth.getCurrentUser().getUid()
+                : null;
+    }
 
-    public void addNotification(String title,
-                                String message,
-                                String entityType,
-                                String entityId) {
+    /* ================= ADD ================= */
 
-        String time = new SimpleDateFormat(
-                "MMM dd, yyyy hh:mm a",
-                Locale.getDefault()
-        ).format(new Date());
+    public void addNotification(
+            String title,
+            String message,
+            String entityType,
+            String entityId
+    ) {
+        String uid = getUid();
+        if (uid == null) {
+            Log.e("FIRESTORE", "User not authenticated");
+            return;
+        }
 
         Map<String, Object> data = new HashMap<>();
         data.put("title", title);
         data.put("message", message);
-        data.put("timestamp", time);
+        data.put("timestamp", System.currentTimeMillis());
         data.put("entityType", entityType);
         data.put("entityId", entityId);
 
-        db.collection("notifications").add(data);
+        db.collection("users")
+                .document(uid)
+                .collection("notifications")
+                .add(data)
+                .addOnSuccessListener(doc ->
+                        Log.d("FIRESTORE", "Notification added: " + doc.getId())
+                )
+                .addOnFailureListener(e ->
+                        Log.e("FIRESTORE", "Notification FAILED", e)
+                );
     }
 
-    /* ================= DELETE SINGLE ================= */
+    /* ================= QUERY ================= */
 
-    public void deleteNotification(String notificationId) {
-        db.collection("notifications")
-                .document(notificationId)
+    public Query getAllNotificationsQuery() {
+        String uid = getUid();
+        if (uid == null) return null;
+
+        return db.collection("users")
+                .document(uid)
+                .collection("notifications")
+                .orderBy("timestamp", Query.Direction.DESCENDING);
+    }
+
+    /* ================= DELETE ================= */
+
+    public void deleteNotification(String id) {
+        String uid = getUid();
+        if (uid == null) return;
+
+        db.collection("users")
+                .document(uid)
+                .collection("notifications")
+                .document(id)
                 .delete();
     }
 
-    /* ================= DELETE BY ENTITY ================= */
-
     public void deleteByEntity(String entityType, String entityId) {
-        db.collection("notifications")
+        String uid = getUid();
+        if (uid == null) return;
+
+        db.collection("users")
+                .document(uid)
+                .collection("notifications")
                 .whereEqualTo("entityType", entityType)
                 .whereEqualTo("entityId", entityId)
                 .get()
-                .addOnSuccessListener(query -> {
-                    for (var doc : query.getDocuments()) {
+                .addOnSuccessListener(qs -> {
+                    for (var doc : qs.getDocuments()) {
                         doc.getReference().delete();
                     }
                 });
-    }
-
-    /* ================= QUERY ALL ================= */
-
-    public Query getAllNotificationsQuery() {
-        return db.collection("notifications")
-                .orderBy("timestamp", Query.Direction.DESCENDING);
     }
 }

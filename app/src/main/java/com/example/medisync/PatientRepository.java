@@ -15,11 +15,16 @@ public class PatientRepository {
     }
 
     // ADD PATIENT
-    public void addPatient(Patient patient) {
+    public void addPatient(Patient patient, OnPatientAdded callback) {
         db.collection("users")
                 .document(uid)
                 .collection("patients")
-                .add(patient);
+                .add(patient)
+                .addOnSuccessListener(doc -> callback.onAdded(doc.getId()));
+    }
+
+    public interface OnPatientAdded {
+        void onAdded(String docId);
     }
 
     // GET ALL PATIENTS

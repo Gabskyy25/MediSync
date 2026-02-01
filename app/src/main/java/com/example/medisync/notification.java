@@ -13,9 +13,8 @@ import java.util.List;
 
 public class notification extends AppCompatActivity {
 
-    private RecyclerView recycler;
     private NotificationAdapter adapter;
-    private NotificationRepository repository;
+    private NotificationRepository repo;
     private ListenerRegistration listener;
 
     @Override
@@ -23,20 +22,27 @@ public class notification extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        recycler = findViewById(R.id.notificationRecycler);
+        RecyclerView recycler = findViewById(R.id.notificationRecycler);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        repository = new NotificationRepository();
         adapter = new NotificationAdapter(new ArrayList<>());
         recycler.setAdapter(adapter);
 
+        repo = new NotificationRepository();
+
         loadNotifications();
+
+        // 🔴 TEST ONLY — REMOVE AFTER CONFIRMATION
+        repo.addNotification(
+                "Welcome!",
+                "Notifications are now working 🎉",
+                "SYSTEM",
+                "INIT"
+        );
     }
 
-    /* ================= LOAD NOTIFICATIONS ================= */
-
     private void loadNotifications() {
-        listener = repository
+        listener = repo
                 .getAllNotificationsQuery()
                 .addSnapshotListener((snapshots, e) -> {
 
@@ -45,9 +51,11 @@ public class notification extends AppCompatActivity {
                     List<NotificationModel> list = new ArrayList<>();
 
                     for (var doc : snapshots.getDocuments()) {
-                        NotificationModel model = doc.toObject(NotificationModel.class);
+                        NotificationModel model =
+                                doc.toObject(NotificationModel.class);
+
                         if (model != null) {
-                            model.setId(doc.getId()); // IMPORTANT
+                            model.setId(doc.getId());
                             list.add(model);
                         }
                     }

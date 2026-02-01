@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "599531561799",
+    "firebase_url": "https://medisync-ff567-default-rtdb.firebaseio.com",
     "project_id": "medisync-ff567",
     "storage_bucket": "medisync-ff567.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.medisync"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "599531561799-vt1r1o2sj9duofnn14s92tmdot84pbc2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.medisync",
+            "certificate_hash": "53faec11a40558caec9a9368256dd3a728f654c0"
+          }
+        },
+        {
+          "client_id": "599531561799-n1b4v4etng34sgi3uc4dnv739g0d5o3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDORHA7mMOq91twBv6GitJVtlPhdmJuh98"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599531561799-n1b4v4etng34sgi3uc4dnv739g0d5o3l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

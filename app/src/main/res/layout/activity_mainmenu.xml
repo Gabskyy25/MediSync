@@ -27,13 +27,6 @@
             android:textColor="#fcf9f2"
             android:textSize="28sp"
             android:textStyle="bold"/>
-
-        <ImageView
-            android:id="@+id/notificationBtn"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/baseline_circle_notifications_24"
-            app:tint="#fcf9f2"/>
     </LinearLayout>
 
     <FrameLayout

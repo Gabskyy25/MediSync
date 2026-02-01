@@ -6,12 +6,16 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class IssueRepository {
 
     private final FirebaseFirestore db;
     private final String uid;
+    private final NotificationRepository notificationRepo;
 
     public IssueRepository() {
         db = FirebaseFirestore.getInstance();
@@ -21,15 +25,31 @@ public class IssueRepository {
         }
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        notificationRepo = new NotificationRepository();
     }
 
     /* ================= ADD ISSUE ================= */
 
     public void addIssue(Issue issue) {
+
         db.collection("users")
                 .document(uid)
                 .collection("issues")
-                .add(issue);
+                .add(issue)
+                .addOnSuccessListener(doc -> {
+
+                    String time = new SimpleDateFormat(
+                            "MMM dd, yyyy hh:mm a",
+                            Locale.getDefault()
+                    ).format(new Date());
+
+                    notificationRepo.addNotification(
+                            "New Health Issue Added",
+                            issue.getIssue() + " (saved at " + time + ")",
+                            "ISSUE",
+                            doc.getId()
+                    );
+                });
     }
 
     /* ================= REALTIME LISTENER ================= */
@@ -46,10 +66,7 @@ public class IssueRepository {
 
                     for (QueryDocumentSnapshot doc : snapshot) {
                         Issue issue = doc.toObject(Issue.class);
-
-                        // 🔥 IMPORTANT: assign Firestore document ID
                         issue.setId(doc.getId());
-
                         list.add(issue);
                     }
 
@@ -69,7 +86,25 @@ public class IssueRepository {
                 .update(
                         "issue", issue,
                         "resolution", resolution
-                );
+                )
+                .addOnSuccessListener(v -> {
+
+                    // ✅ STANDARD TIME
+                    String time = new SimpleDateFormat(
+                            "MMM dd, yyyy hh:mm a",
+                            Locale.getDefault()
+                    ).format(new Date());
+
+                    // 🔔 UPDATE NOTIFICATION
+                    notificationRepo.addNotification(
+                            "Health Issue Updated",
+                            "Updated issue:\n" +
+                                    issue + "\nResolution:\n" +
+                                    resolution + "\n\n(" + time + ")",
+                            "ISSUE",
+                            issueId
+                    );
+                });
     }
 
     /* ================= DELETE ISSUE ================= */
@@ -81,7 +116,21 @@ public class IssueRepository {
                 .document(uid)
                 .collection("issues")
                 .document(issueId)
-                .delete();
+                .delete()
+                .addOnSuccessListener(v -> {
+
+                    String time = new SimpleDateFormat(
+                            "MMM dd, yyyy hh:mm a",
+                            Locale.getDefault()
+                    ).format(new Date());
+
+                    notificationRepo.addNotification(
+                            "Health Issue Deleted",
+                            "An issue was removed at " + time,
+                            "ISSUE",
+                            issueId
+                    );
+                });
     }
 
     /* ================= CALLBACK ================= */

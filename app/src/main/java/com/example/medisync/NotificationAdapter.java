@@ -1,60 +1,79 @@
 package com.example.medisync;
 
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.VH> {
+public class NotificationAdapter
+        extends RecyclerView.Adapter<NotificationAdapter.VH> {
 
-    private List<NotificationModel> list;
+    private final List<NotificationModel> list = new ArrayList<>();
 
-    public NotificationAdapter(List<NotificationModel> list) {
-        this.list = list;
+    public NotificationAdapter(List<NotificationModel> initial) {
+        if (initial != null) list.addAll(initial);
     }
 
-    /* ================= UPDATE DATA (FIRESTORE) ================= */
+    /* ================= UPDATE ================= */
 
     public void updateList(List<NotificationModel> newList) {
-        this.list = newList;
+        list.clear();
+        if (newList != null) list.addAll(newList);
         notifyDataSetChanged();
     }
 
     /* ================= VIEW HOLDER ================= */
 
     static class VH extends RecyclerView.ViewHolder {
-        TextView title, msg, time;
+        TextView title, message, time;
 
-        VH(View v) {
+        VH(@NonNull View v) {
             super(v);
             title = v.findViewById(R.id.notifTitle);
-            msg = v.findViewById(R.id.notifMessage);
+            message = v.findViewById(R.id.notifMessage);
             time = v.findViewById(R.id.notifTime);
         }
     }
 
+    @NonNull
     @Override
-    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new VH(
-                LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.notification_item, parent, false)
-        );
+    public VH onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType
+    ) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.notification_item, parent, false);
+        return new VH(v);
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
+    public void onBindViewHolder(
+            @NonNull VH holder,
+            int position
+    ) {
         NotificationModel n = list.get(position);
+
         holder.title.setText(n.getTitle());
-        holder.msg.setText(n.getMessage());
-        holder.time.setText(n.getTimestamp());
+        holder.message.setText(n.getMessage());
+
+        // ⏰ Standard 12-hour time (AM/PM)
+        String formattedTime = DateFormat.format(
+                "hh:mm a",   // ✅ 12-hour format
+                n.getTimestamp()
+        ).toString();
+
+        holder.time.setText(formattedTime);
     }
 
     @Override
     public int getItemCount() {
-        return list == null ? 0 : list.size();
+        return list.size();
     }
 }

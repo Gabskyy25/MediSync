@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -42,11 +43,13 @@ public class signupcaregiver extends AppCompatActivity {
         loading.setCancelable(false);
 
         signupBtn.setOnClickListener(v -> {
+
             String email = emailField.getText().toString().trim();
             String password = passField.getText().toString().trim();
             String confirmPassword = confirmPassField.getText().toString().trim();
             String phone = phoneField.getText().toString().trim();
 
+            // ---------- VALIDATION ----------
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 emailField.setError("Invalid email format");
                 return;
@@ -62,13 +65,14 @@ public class signupcaregiver extends AppCompatActivity {
                 return;
             }
 
-            if (phone.length() < 8) {
+            if (phone.isEmpty() || phone.length() < 8) {
                 phoneField.setError("Invalid phone number");
                 return;
             }
 
             loading.show();
 
+            // ---------- CREATE AUTH ACCOUNT ----------
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
@@ -79,27 +83,42 @@ public class signupcaregiver extends AppCompatActivity {
                             return;
                         }
 
-                        String uid = mAuth.getCurrentUser().getUid();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser == null) {
+                            loading.dismiss();
+                            Toast.makeText(this,
+                                    "User creation failed. Try again.",
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
 
+                        String uid = firebaseUser.getUid();
+
+                        // ---------- FIRESTORE USER DATA ----------
                         Map<String, Object> userData = new HashMap<>();
                         userData.put("email", email);
-                        userData.put("phone", phone);
+                        userData.put("phone", phone); // ✅ THIS FIXES "NOT SET"
+                        userData.put("name", "Caregiver");
                         userData.put("role", "Caregiver");
                         userData.put("createdAt", System.currentTimeMillis());
 
+                        // ---------- SAVE TO FIRESTORE ----------
                         db.collection("users")
                                 .document(uid)
                                 .set(userData)
                                 .addOnSuccessListener(unused -> {
                                     loading.dismiss();
-                                    Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this,
+                                            "Account created successfully!",
+                                            Toast.LENGTH_SHORT).show();
+
                                     startActivity(new Intent(this, MainActivity.class));
                                     finish();
                                 })
                                 .addOnFailureListener(e -> {
                                     loading.dismiss();
                                     Toast.makeText(this,
-                                            "Firestore Error: " + e.getMessage(),
+                                            "Failed to save user data: " + e.getMessage(),
                                             Toast.LENGTH_LONG).show();
                                 });
                     });

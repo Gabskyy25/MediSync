@@ -37,6 +37,9 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
     private TimePicker timePicker;
     private EditText etAlarmDescription;
 
+    // 🔔 Notification repo
+    private NotificationRepository notificationRepo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +57,13 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
 
         enableSwipeToDelete(recyclerAlarms);
 
+        notificationRepo = new NotificationRepository();
+
         backBtn.setOnClickListener(v -> finish());
         btnSetAlarm.setOnClickListener(v -> setAlarm());
     }
 
-    /* ================= RELOAD WHEN RETURNING ================= */
+    /* ================= RELOAD ================= */
 
     @Override
     protected void onResume() {
@@ -85,53 +90,92 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
     /* ================= ADD ================= */
 
     private void setAlarm() {
+
         String desc = etAlarmDescription.getText().toString().trim();
         if (desc.isEmpty()) desc = "Alarm";
 
         int hour = timePicker.getHour();
         int minute = timePicker.getMinute();
 
-        String time = String.format(Locale.US, "%02d:%02d", hour, minute);
+        // 🔧 RAW time (used internally by alarm scheduling)
+        String time24 = String.format(Locale.US, "%02d:%02d", hour, minute);
+
+        // 🔧 FORMAT FOR NOTIFICATION (12-hour standard time)
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+
+        String formattedTime =
+                android.text.format.DateFormat
+                        .format("hh:mm a", cal)
+                        .toString();
 
         List<Integer> days = new ArrayList<>();
         days.add(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-        AlarmModel model = new AlarmModel(desc, time, true, days);
+        AlarmModel model = new AlarmModel(desc, time24, true, days);
+
+        // ✅ SAVE FIRST so ID exists
+        AlarmStorage.saveAlarm(model);
+
+        // 🔔 ADD NOTIFICATION (12-hour time)
+        notificationRepo.addNotification(
+                "Alarm Created",
+                "Alarm \"" + desc + "\" set for " + formattedTime,
+                "ALARM",
+                model.getId()
+        );
 
         alarmList.add(model);
         adapter.notifyItemInserted(alarmList.size() - 1);
 
         scheduleAlarm(model);
-        AlarmStorage.saveAlarm(model);
 
         Toast.makeText(this, "Alarm Added!", Toast.LENGTH_SHORT).show();
         etAlarmDescription.setText("");
-
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Toast.makeText(this, "User NOT logged in", Toast.LENGTH_LONG).show();
-            return;
-        }
-
     }
+
 
     /* ================= DELETE ================= */
 
     private void deleteAlarm(int position) {
+
+        // Get alarm model
         AlarmModel model = alarmList.get(position);
 
+        // Safety check
+        if (model == null || model.getId() == null) {
+            Toast.makeText(this, "Unable to delete alarm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 1️⃣ Cancel scheduled alarm
         cancelAlarm(model);
+
+        // 2️⃣ ADD NOTIFICATION FIRST (ID still exists)
+        notificationRepo.addNotification(
+                "Alarm Deleted",
+                "Alarm \"" + model.getDescription() + "\" was removed",
+                "ALARM",
+                model.getId()
+        );
+
+        // 3️⃣ Delete alarm from Firestore
         AlarmStorage.deleteAlarm(model.getId());
 
+        // 4️⃣ Remove from UI
         alarmList.remove(position);
         adapter.notifyItemRemoved(position);
 
         Toast.makeText(this, "Alarm Deleted", Toast.LENGTH_SHORT).show();
     }
 
+
     /* ================= SCHEDULING ================= */
 
     private void scheduleAlarm(AlarmModel model) {
-        cancelAlarm(model); // prevent duplicates
+
+        cancelAlarm(model);
 
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (manager == null) return;
@@ -141,6 +185,7 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
         int minute = Integer.parseInt(parts[1]);
 
         for (int day : model.getDays()) {
+
             Calendar c = Calendar.getInstance();
             c.set(Calendar.DAY_OF_WEEK, day);
             c.set(Calendar.HOUR_OF_DAY, hour);
@@ -177,6 +222,7 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
     }
 
     private void cancelAlarm(AlarmModel model) {
+
         if (model.getId() == null) return;
 
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -196,6 +242,7 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
     /* ================= SWIPE ================= */
 
     private void enableSwipeToDelete(RecyclerView recycler) {
+
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
@@ -225,7 +272,8 @@ public class alarm extends AppCompatActivity implements AlarmAdapter.Listener {
                         .create()
                         .decorate();
 
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY,
+                        actionState, isCurrentlyActive);
             }
         }).attachToRecyclerView(recycler);
     }

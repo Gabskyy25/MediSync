@@ -20,9 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -63,7 +66,6 @@ public class info extends Fragment {
         recycler.setAdapter(adapter);
 
         enableSwipeToDelete();
-
         birthdate.setOnClickListener(vw -> showDatePicker());
 
         saveBtn.setOnClickListener(view -> {
@@ -76,7 +78,7 @@ public class info extends Fragment {
         return v;
     }
 
-    /* ================= REALTIME LISTENER ================= */
+    /* ================= LISTENER ================= */
 
     private void listenForPatients() {
         patientRepo.getPatients()
@@ -89,7 +91,7 @@ public class info extends Fragment {
                     for (DocumentSnapshot doc : snapshots.getDocuments()) {
                         Patient p = doc.toObject(Patient.class);
                         if (p != null) {
-                            p.setId(doc.getId()); // 🔑 IMPORTANT
+                            p.setId(doc.getId());
                             list.add(p);
                         }
                     }
@@ -118,17 +120,27 @@ public class info extends Fragment {
 
         Patient patient = new Patient(n, ageInt, b, d);
 
-        patientRepo.addPatient(patient);
+        patientRepo.addPatient(patient, docId -> {
 
-        notificationRepo.addNotification(
-                "Patient Added",
-                n + " was added",
-                "PATIENT",
-                "AUTO" // no docId available yet
-        );
+            String time = new SimpleDateFormat(
+                    "MMM dd, yyyy hh:mm a",
+                    Locale.getDefault()
+            ).format(new Date());
+
+            notificationRepo.addNotification(
+                    "Patient Added",
+                    n + " was added (" + time + ")",
+                    "PATIENT",
+                    docId
+            );
+
+            Toast.makeText(getContext(),
+                    "Patient Saved",
+                    Toast.LENGTH_SHORT).show();
+        });
     }
 
-    /* ================= SWIPE DELETE ================= */
+    /* ================= DELETE ================= */
 
     private void enableSwipeToDelete() {
 
@@ -148,12 +160,27 @@ public class info extends Fragment {
                 int pos = viewHolder.getBindingAdapterPosition();
                 Patient patient = list.get(pos);
 
+                // ❌ delete patient only
                 patientRepo.deletePatient(patient.getId());
 
-                notificationRepo.deleteByEntity(
-                        "PATIENT",
-                        patient.getId()
+                // ✅ KEEP "Patient Added" notification
+                // ✅ ADD delete notification
+
+                String time = new SimpleDateFormat(
+                        "MMM dd, yyyy hh:mm a",
+                        Locale.getDefault()
+                ).format(new Date());
+
+                notificationRepo.addNotification(
+                        "Patient Removed",
+                        patient.getName() + " was removed (" + time + ")",
+                        "SYSTEM",
+                        "PATIENT_REMOVED"
                 );
+
+                Toast.makeText(getContext(),
+                        "Patient Deleted",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -179,7 +206,7 @@ public class info extends Fragment {
         }).attachToRecyclerView(recycler);
     }
 
-    /* ================= DATE PICKER ================= */
+    /* ================= DATE ================= */
 
     private void showDatePicker() {
         Calendar c = Calendar.getInstance();

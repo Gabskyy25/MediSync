@@ -49,10 +49,7 @@ public class MainMenu extends AppCompatActivity {
         ImageView addButton = findViewById(R.id.addissuebtn);
         addButton.setOnClickListener(v -> showAddIssueDialog());
 
-        ImageView notif = findViewById(R.id.notificationBtn);
-        notif.setOnClickListener(v ->
-                startActivity(new Intent(this, notification.class))
-        );
+
     }
 
     /* ================= ADD ISSUE ================= */

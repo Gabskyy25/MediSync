@@ -56,7 +56,8 @@ public class schedule extends AppCompatActivity {
 
         backBtn.setOnClickListener(v -> finish());
 
-        findViewById(R.id.inputButton).setOnClickListener(v -> showScheduleDialog());
+        findViewById(R.id.inputButton)
+                .setOnClickListener(v -> showScheduleDialog());
     }
 
     /* ================= LOAD ================= */
@@ -67,6 +68,7 @@ public class schedule extends AppCompatActivity {
                     if (snap == null) return;
 
                     scheduleList.clear();
+
                     for (DocumentSnapshot doc : snap) {
                         ScheduleModel model = doc.toObject(ScheduleModel.class);
                         if (model != null) {
@@ -85,11 +87,13 @@ public class schedule extends AppCompatActivity {
         input.setHint("Enter schedule details");
 
         new AlertDialog.Builder(this)
-                .setTitle("ToDo")
+                .setTitle("Add Schedule")
                 .setView(input)
                 .setPositiveButton("Next", (d, w) -> {
                     String title = input.getText().toString().trim();
-                    if (!title.isEmpty()) pickDateTime(title);
+                    if (!title.isEmpty()) {
+                        pickDateTime(title);
+                    }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
@@ -100,12 +104,18 @@ public class schedule extends AppCompatActivity {
 
         new DatePickerDialog(this, (v, y, m, d) -> {
             calendar.set(y, m, d);
+
             new TimePickerDialog(this, (tv, h, min) -> {
                 calendar.set(Calendar.HOUR_OF_DAY, h);
                 calendar.set(Calendar.MINUTE, min);
+                calendar.set(Calendar.SECOND, 0);
+
                 addSchedule(title, calendar.getTime());
+
             }, calendar.get(Calendar.HOUR_OF_DAY),
-                    calendar.get(Calendar.MINUTE), false).show();
+                    calendar.get(Calendar.MINUTE),
+                    false).show();
+
         }, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -113,77 +123,98 @@ public class schedule extends AppCompatActivity {
 
     private void addSchedule(String title, Date date) {
 
+        // ✅ STANDARD (12-HOUR) TIME FORMAT
         String formattedDate = new SimpleDateFormat(
                 "MMM dd, yyyy hh:mm a",
                 Locale.getDefault()
         ).format(date);
 
         ScheduleModel model = new ScheduleModel(title, formattedDate);
+
+        // ✅ SAVE SCHEDULE
         scheduleRepo.addSchedule(model);
 
+        // 🔔 ADD NOTIFICATION (SAME PATTERN AS CONTACTS)
         notificationRepo.addNotification(
                 "Schedule Added",
-                title + " scheduled on " + formattedDate,
+                "\"" + title + "\" scheduled for " + formattedDate,
                 "SCHEDULE",
                 title
         );
 
-        Toast.makeText(this, "Schedule Added", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,
+                "Schedule Added",
+                Toast.LENGTH_SHORT).show();
     }
 
     /* ================= DELETE ================= */
 
     private void enableSwipeToDelete() {
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(
+                        0,
+                        ItemTouchHelper.LEFT
+                ) {
 
-            @Override
-            public boolean onMove(@NonNull RecyclerView r,
-                                  @NonNull RecyclerView.ViewHolder v,
-                                  @NonNull RecyclerView.ViewHolder t) {
-                return false;
-            }
+                    @Override
+                    public boolean onMove(
+                            @NonNull RecyclerView r,
+                            @NonNull RecyclerView.ViewHolder v,
+                            @NonNull RecyclerView.ViewHolder t) {
+                        return false;
+                    }
 
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder vh, int d) {
+                    @Override
+                    public void onSwiped(
+                            @NonNull RecyclerView.ViewHolder vh,
+                            int d) {
 
-                int pos = vh.getBindingAdapterPosition();
-                ScheduleModel model = scheduleList.get(pos);
+                        int pos = vh.getBindingAdapterPosition();
+                        ScheduleModel model = scheduleList.get(pos);
 
-                scheduleRepo.deleteSchedule(model.getId());
+                        // 🗑 DELETE SCHEDULE
+                        scheduleRepo.deleteSchedule(model.getId());
 
-                notificationRepo.addNotification(
-                        "Schedule Deleted",
-                        model.getTitle() + " was removed",
-                        "SCHEDULE",
-                        model.getId()
-                );
+                        // 🔔 DELETE NOTIFICATION
+                        notificationRepo.addNotification(
+                                "Schedule Deleted",
+                                "\"" + model.getTitle() + "\" was removed",
+                                "SCHEDULE",
+                                model.getId()
+                        );
 
-                scheduleList.remove(pos);
-                adapter.notifyItemRemoved(pos);
+                        scheduleList.remove(pos);
+                        adapter.notifyItemRemoved(pos);
 
-                Toast.makeText(schedule.this,
-                        "Schedule Deleted",
-                        Toast.LENGTH_SHORT).show();
-            }
+                        Toast.makeText(
+                                schedule.this,
+                                "Schedule Deleted",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
 
-            @Override
-            public void onChildDraw(@NonNull Canvas c,
-                                    @NonNull RecyclerView rv,
-                                    @NonNull RecyclerView.ViewHolder vh,
-                                    float dX, float dY,
-                                    int actionState,
-                                    boolean active) {
+                    @Override
+                    public void onChildDraw(
+                            @NonNull Canvas c,
+                            @NonNull RecyclerView rv,
+                            @NonNull RecyclerView.ViewHolder vh,
+                            float dX,
+                            float dY,
+                            int actionState,
+                            boolean active) {
 
-                new RecyclerViewSwipeDecorator.Builder(
-                        c, rv, vh, dX, dY, actionState, active)
-                        .addSwipeLeftBackgroundColor(Color.parseColor("#FF5252"))
-                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
-                        .create()
-                        .decorate();
+                        new RecyclerViewSwipeDecorator.Builder(
+                                c, rv, vh, dX, dY, actionState, active)
+                                .addSwipeLeftBackgroundColor(
+                                        Color.parseColor("#FF5252"))
+                                .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                                .create()
+                                .decorate();
 
-                super.onChildDraw(c, rv, vh, dX, dY, actionState, active);
-            }
+                        super.onChildDraw(
+                                c, rv, vh, dX, dY, actionState, active);
+                    }
 
-        }).attachToRecyclerView(recyclerSchedules);
+                }).attachToRecyclerView(recyclerSchedules);
     }
 }

@@ -23,11 +23,12 @@ import java.util.Comparator;
 
 public class contactinfo extends AppCompatActivity {
 
-    private ArrayList<Contact> contactList = new ArrayList<>();
-    private ArrayList<Contact> filteredList = new ArrayList<>();
+    private final ArrayList<Contact> contactList = new ArrayList<>();
+    private final ArrayList<Contact> filteredList = new ArrayList<>();
     private ContactAdapter adapter;
 
     private ContactRepository contactRepo;
+    private NotificationRepository notificationRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +38,12 @@ public class contactinfo extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewContacts);
         ImageView fabAddInfo = findViewById(R.id.btnAddInfo);
         Toolbar toolbar = findViewById(R.id.toolbarContacts);
+        ImageView backBtn = findViewById(R.id.backbtn);
 
         setSupportActionBar(toolbar);
 
         contactRepo = new ContactRepository();
+        notificationRepo = new NotificationRepository();
 
         adapter = new ContactAdapter(filteredList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -49,10 +52,12 @@ public class contactinfo extends AppCompatActivity {
         setupRecyclerViewLongPress();
         loadContacts();
 
+        backBtn.setOnClickListener(v -> finish());
         fabAddInfo.setOnClickListener(v -> showAddContactDialog());
     }
 
-    // 🔥 LOAD FROM FIREBASE
+    /* ================= LOAD ================= */
+
     private void loadContacts() {
         contactRepo.getAllContacts(contacts -> {
             contactList.clear();
@@ -64,6 +69,8 @@ public class contactinfo extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         });
     }
+
+    /* ================= MENU ================= */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,6 +110,8 @@ public class contactinfo extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /* ================= FILTER ================= */
+
     private void filterContacts(String query) {
         filteredList.clear();
 
@@ -119,6 +128,8 @@ public class contactinfo extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /* ================= LONG PRESS ================= */
+
     private void setupRecyclerViewLongPress() {
         adapter.setOnItemLongClickListener(position -> {
             Contact contact = filteredList.get(position);
@@ -129,7 +140,14 @@ public class contactinfo extends AppCompatActivity {
                         if (i == 0) {
                             showEditContactDialog(contact, position);
                         } else {
-                            // 🔥 DELETE FROM FIREBASE
+
+                            notificationRepo.addNotification(
+                                    "Contact Removed",
+                                    "Contact \"" + contact.getName() + "\" was removed",
+                                    "CONTACT",
+                                    String.valueOf(contact.getId())
+                            );
+
                             contactRepo.deleteContact(String.valueOf(contact.getId()));
 
                             contactList.remove(contact);
@@ -140,6 +158,8 @@ public class contactinfo extends AppCompatActivity {
                     .show();
         });
     }
+
+    /* ================= ADD ================= */
 
     private void showAddContactDialog() {
         Dialog dialog = new Dialog(this);
@@ -153,20 +173,26 @@ public class contactinfo extends AppCompatActivity {
 
         btnConfirm.setOnClickListener(v -> {
 
-            String name = etName.getText().toString();
-            String number = etNumber.getText().toString();
-            String address = etAddress.getText().toString();
+            String name = etName.getText().toString().trim();
+            String number = etNumber.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
 
             int selectedId = radioGroupRelation.getCheckedRadioButtonId();
             RadioButton rb = dialog.findViewById(selectedId);
             String relation = rb != null ? rb.getText().toString() : "";
 
-            if (!name.isEmpty() && !number.isEmpty() && !address.isEmpty() && !relation.isEmpty()) {
+            if (!name.isEmpty() && !number.isEmpty()
+                    && !address.isEmpty() && !relation.isEmpty()) {
 
                 Contact contact = new Contact(name, number, address, relation);
-
-                // 🔥 SAVE TO FIREBASE
                 contactRepo.addContact(contact);
+
+                notificationRepo.addNotification(
+                        "Contact Added",
+                        "Contact \"" + name + "\" was added (" + relation + ")",
+                        "CONTACT",
+                        String.valueOf(contact.getId())
+                );
 
                 contactList.add(contact);
                 filteredList.add(contact);
@@ -178,6 +204,8 @@ public class contactinfo extends AppCompatActivity {
 
         dialog.show();
     }
+
+    /* ================= EDIT ================= */
 
     private void showEditContactDialog(Contact contact, int position) {
         Dialog dialog = new Dialog(this);
@@ -205,19 +233,28 @@ public class contactinfo extends AppCompatActivity {
 
         btnConfirm.setOnClickListener(v -> {
 
-            String name = etName.getText().toString();
-            String number = etNumber.getText().toString();
-            String address = etAddress.getText().toString();
+            String name = etName.getText().toString().trim();
+            String number = etNumber.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
 
             int selectedId = radioGroupRelation.getCheckedRadioButtonId();
             RadioButton rb = dialog.findViewById(selectedId);
             String relation = rb != null ? rb.getText().toString() : "";
 
-            if (!name.isEmpty() && !number.isEmpty() && !address.isEmpty() && !relation.isEmpty()) {
+            if (!name.isEmpty() && !number.isEmpty()
+                    && !address.isEmpty() && !relation.isEmpty()) {
 
                 Contact updated = new Contact(name, number, address, relation);
 
-                // 🔥 FIREBASE UPDATE = delete + add (simple approach)
+                // 🔔 UPDATE NOTIFICATION
+                notificationRepo.addNotification(
+                        "Contact Updated",
+                        "Contact \"" + name + "\" was updated\n📞 " + number +
+                                "\n👥 " + relation,
+                        "CONTACT",
+                        String.valueOf(contact.getId())
+                );
+
                 contactRepo.deleteContact(String.valueOf(contact.getId()));
                 contactRepo.addContact(updated);
 
